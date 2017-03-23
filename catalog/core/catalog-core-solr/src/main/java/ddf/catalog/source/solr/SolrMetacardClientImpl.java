@@ -70,6 +70,20 @@ public class SolrMetacardClientImpl implements SolrMetacardClient {
 
     private static final String DISTANCE_SORT_FIELD = "_distance_";
 
+    /**
+     * Because {@link SolrQuery#setRows(Integer)} will increment the given integer and use it as an
+     * array index, we cannot use {@link Integer#MAX_VALUE} by default and should pick a much lower,
+     * sensible ceiling for our row count. In practice, an un-paged query with a million or more results
+     * is not viable for the browser.
+     *
+     * Root problem is a lack of proper paging implementations across DDF; anywhere a
+     * {@link ddf.catalog.operation.impl.QueryImpl} is constructed with a pageSize < 1 is an issue that
+     * needs to be addressed.
+     *
+     * (See DDF-2872)
+     */
+    private static final Integer MAX_ROWS = 1000000;
+
     private static final String GEOMETRY_SORT_FIELD =
             Metacard.GEOGRAPHY + SchemaFields.GEO_SUFFIX + SchemaFields.SORT_KEY_SUFFIX;
 
@@ -279,8 +293,9 @@ public class SolrMetacardClientImpl implements SolrMetacardClient {
 
         if (request.getQuery()
                 .getPageSize() < 1) {
-            //TODO: Needs to pass in something else.
-            query.setRows(Integer.MAX_VALUE);
+            //TODO: Needs to pass in something else. See DDF-2872.
+            //query.setRows(Integer.MAX_VALUE);
+            query.setRows(MAX_ROWS);
         } else {
             query.setRows(request.getQuery()
                     .getPageSize());
