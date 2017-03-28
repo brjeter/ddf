@@ -102,8 +102,11 @@ public class ConfigureCommand extends AbstractApplicationCommand {
 
         Map<String, Object> mapOfJson = (Map<String, Object>) fromJson(json);
 
-        System.out.println("Updating Guest Profile");
-        updateGuestClaimsProfile((String) mapOfJson.get("guest-profile"));
+        //        System.out.println("Updating Guest Profile");
+        //        executeAsSystem(() -> {
+        //            updateGuestClaimsProfile((String) mapOfJson.get("guest-profile"));
+        //            return true;
+        //        });
 
         System.out.println("Starting apps");
         startApps(applicationService, (List<String>) mapOfJson.get("startup-apps"));
