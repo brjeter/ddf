@@ -18,6 +18,7 @@ import static org.boon.Boon.fromJson;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -68,6 +69,8 @@ public class ConfigureCommand extends AbstractApplicationCommand {
 
     private SystemPropertiesAdmin systemPropsAdmin;
 
+    protected PrintStream console = System.out;
+
     public ConfigureCommand() {
         String ddfHome = System.getProperty("ddf.home");
         GuestClaimsHandlerExt guestClaimsHandler =
@@ -93,7 +96,6 @@ public class ConfigureCommand extends AbstractApplicationCommand {
         String json;
         try (InputStream inputStream = new FileInputStream(filePath)) {
             json = IOUtils.toString(inputStream);
-            //            System.out.println("Config contents: " + json);
 
         } catch (IOException e) {
             LOGGER.debug("Could not find config file: ", e);
@@ -102,29 +104,29 @@ public class ConfigureCommand extends AbstractApplicationCommand {
 
         Map<String, Object> mapOfJson = (Map<String, Object>) fromJson(json);
 
-        //        System.out.println("Updating Guest Profile");
+        //        console.println("Updating Guest Profile");
         //        executeAsSystem(() -> {
         //            updateGuestClaimsProfile((String) mapOfJson.get("guest-profile"));
         //            return true;
         //        });
 
-        System.out.println("Starting apps");
+        console.println("Starting apps");
         startApps(applicationService, (List<String>) mapOfJson.get("startup-apps"));
 
-        System.out.println("Updating system properties");
-        writeSystemProperties((Map<String, String>) mapOfJson.get("system-properties"));
+        //        console.println("Updating system properties");
+        //        writeSystemProperties((Map<String, String>) mapOfJson.get("system-properties"));
 
         FeaturesService featuresService = (FeaturesService) getService(FeaturesService.class);
 
         if (featuresService == null) {
-            System.out.println("Features Service was null");
+            console.println("Features Service was null");
         } else {
-            System.out.println("Starting features");
+            console.println("Starting features");
             uninstallInstallerModule(featuresService);
             startFeatures(featuresService, (List<String>) mapOfJson.get("startup-features"));
         }
 
-        System.out.println("Configuration complete.");
+        console.println("Configuration complete.");
 
         return;
     }
