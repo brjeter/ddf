@@ -18,7 +18,6 @@ import static org.boon.Boon.fromJson;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -35,10 +34,10 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.codice.ddf.admin.application.service.ApplicationService;
 import org.codice.ddf.admin.application.service.ApplicationServiceException;
+import org.codice.ddf.platform.util.properties.PropertiesFileReader;
 import org.codice.ddf.security.common.Security;
 import org.codice.ddf.ui.admin.api.GuestClaimsHandlerExt;
 import org.codice.ddf.ui.admin.api.impl.SystemPropertiesAdmin;
-import org.codice.ddf.ui.admin.api.util.PropertiesFileReader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -68,8 +67,6 @@ public class ConfigureCommand extends AbstractApplicationCommand {
     private org.codice.ddf.ui.admin.api.ConfigurationAdmin ddfConfigAdmin;
 
     private SystemPropertiesAdmin systemPropsAdmin;
-
-    protected PrintStream console = System.out;
 
     public ConfigureCommand() {
         String ddfHome = System.getProperty("ddf.home");
