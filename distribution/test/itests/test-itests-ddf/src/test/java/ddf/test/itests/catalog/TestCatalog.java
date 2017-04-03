@@ -120,8 +120,8 @@ import ddf.catalog.data.types.Core;
 /**
  * Tests the Catalog framework components. Includes helper methods at the Catalog level.
  */
-@RunWith(PaxExam.class)
-@ExamReactorStrategy(PerSuite.class)
+//@RunWith(PaxExam.class)
+//@ExamReactorStrategy(PerSuite.class)
 public class TestCatalog extends AbstractIntegrationTest {
 
     private static final String METACARD_X_PATH = "/metacards/metacard[@id='%s']";
@@ -150,7 +150,7 @@ public class TestCatalog extends AbstractIntegrationTest {
 
     private UrlResourceReaderConfigurator urlResourceReaderConfigurator;
 
-    @BeforeExam
+//    @BeforeExam
     public void beforeExam() throws Exception {
         try {
             waitForSystemReady();
@@ -161,22 +161,29 @@ public class TestCatalog extends AbstractIntegrationTest {
 
     @Before
     public void setup() {
-        urlResourceReaderConfigurator = getUrlResourceReaderConfigurator();
+        basePort=8993;
+//        urlResourceReaderConfigurator = getUrlResourceReaderConfigurator();
     }
 
     @After
     public void tearDown() throws IOException {
-        urlResourceReaderConfigurator.setUrlResourceReaderRootDirs(new String[] {
-                DEFAULT_URL_RESOURCE_READER_ROOT_RESOURCE_DIRS});
-        clearCatalog();
+//        urlResourceReaderConfigurator.setUrlResourceReaderRootDirs(new String[] {
+//                DEFAULT_URL_RESOURCE_READER_ROOT_RESOURCE_DIRS});
+//        clearCatalog();
     }
 
     @Test
     public void testCreateStorage() throws IOException {
-        String fileName = testName.getMethodName() + ".jpg";
-        File tmpFile = createTemporaryFile(fileName,
-                IOUtils.toInputStream(getFileContent(SAMPLE_IMAGE)));
-        String id = given().multiPart(tmpFile)
+//        String fileName = testName.getMethodName() + ".jpg";
+//        File tmpFile = createTemporaryFile(fileName,
+//                IOUtils.toInputStream(getFileContent(SAMPLE_IMAGE)));
+        File tmpFile = new File(this.getClass()
+                .getResource(SAMPLE_IMAGE).getFile());
+
+        String id = given().relaxedHTTPSValidation().auth()
+                .preemptive()
+                .basic("admin", "admin")
+                .multiPart(tmpFile)
                 .expect()
                 .log()
                 .headers()
@@ -190,10 +197,12 @@ public class TestCatalog extends AbstractIntegrationTest {
 
     @Test
     public void testReadStorage() throws IOException {
-        String fileName = testName.getMethodName() + ".jpg";
-        File tmpFile = createTemporaryFile(fileName,
-                IOUtils.toInputStream(getFileContent(SAMPLE_IMAGE)));
-        String id = given().multiPart(tmpFile)
+//        String fileName = testName.getMethodName() + ".jpg";
+//        File tmpFile = createTemporaryFile(fileName,
+//                IOUtils.toInputStream(getFileContent(SAMPLE_IMAGE)));
+        File tmpFile = new File(this.getClass()
+                .getResource(SAMPLE_IMAGE).getFile());
+        String id = given().relaxedHTTPSValidation().multiPart(tmpFile)
                 .expect()
                 .log()
                 .headers()
@@ -206,7 +215,7 @@ public class TestCatalog extends AbstractIntegrationTest {
                 "placeholder_id",
                 id);
 
-        given().get(url)
+        given().relaxedHTTPSValidation().get(url)
                 .then()
                 .log()
                 .headers()
@@ -219,9 +228,11 @@ public class TestCatalog extends AbstractIntegrationTest {
 
     @Test
     public void testReadDerivedStorage() throws IOException {
-        String fileName = testName.getMethodName() + ".jpg";
-        File tmpFile = createTemporaryFile(fileName, getFileContentAsStream(SAMPLE_IMAGE));
-        String id = given().multiPart(tmpFile)
+//        String fileName = testName.getMethodName() + ".jpg";
+//        File tmpFile = createTemporaryFile(fileName, getFileContentAsStream(SAMPLE_IMAGE));
+        File tmpFile = new File(this.getClass()
+                .getResource(SAMPLE_IMAGE).getFile());
+        String id = given().relaxedHTTPSValidation().multiPart(tmpFile)
                 .expect()
                 .log()
                 .headers()
@@ -230,10 +241,10 @@ public class TestCatalog extends AbstractIntegrationTest {
                 .post(REST_PATH.getUrl())
                 .getHeader("id");
 
-        final String url = REST_PATH.getUrl() + "sources/ddf.distribution/" + id
+        final String url = REST_PATH.getUrl() + "sources/Brandans-MacBook-Pro.local/" + id
                 + "?transform=resource&qualifier=preview";
 
-        given().get(url)
+        given().relaxedHTTPSValidation().get(url)
                 .then()
                 .log()
                 .headers()

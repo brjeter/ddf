@@ -200,7 +200,7 @@ public class CatalogTestCommons {
      */
     public static void deleteMetacard(String id, boolean checkResponse) {
         if (checkResponse) {
-            delete(REST_PATH.getUrl() + id).then()
+            given().relaxedHTTPSValidation().delete(REST_PATH.getUrl() + id).then()
                     .assertThat()
                     .statusCode(HttpStatus.SC_OK);
         } else {

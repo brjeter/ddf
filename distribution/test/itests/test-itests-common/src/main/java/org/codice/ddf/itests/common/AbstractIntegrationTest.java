@@ -113,8 +113,8 @@ public abstract class AbstractIntegrationTest {
 
     protected static String ddfHome;
 
-    @Rule
-    public PaxExamRule paxExamRule = new PaxExamRule(this);
+//    @Rule
+//    public PaxExamRule paxExamRule = new PaxExamRule(this);
 
     protected String logLevel = "";
 
@@ -256,8 +256,7 @@ public abstract class AbstractIntegrationTest {
     public static final DynamicPort HTTP_PORT = new DynamicPort("org.codice.ddf.system.httpPort",
             1);
 
-    public static final DynamicPort HTTPS_PORT = new DynamicPort("org.codice.ddf.system.httpsPort",
-            2);
+    public static final DynamicPort HTTPS_PORT = new DynamicPort(0);
 
     public static final DynamicPort DEFAULT_PORT = new DynamicPort("org.codice.ddf.system.port", 2);
 
@@ -312,7 +311,7 @@ public abstract class AbstractIntegrationTest {
         }
     }
 
-    @PostTestConstruct
+//    @PostTestConstruct
     public void initFacades() {
         ddfHome = System.getProperty(DDF_HOME_PROPERTY);
         adminConfig = new AdminConfig(configAdmin);
