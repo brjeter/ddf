@@ -382,5 +382,6 @@
         <module>platform-filter-clientinfo</module>
         <module>platform-filter-response</module>
         <module>email</module>
+        <module>zookeeper-config-persistence</module>
     </modules>
 </project>

@@ -30,6 +30,10 @@
         <bundle>mvn:ddf.distribution/branding-api/${project.version}</bundle>
     </feature>
 
+    <feature name="zookeeper-config-persistence" version="${project.version}" description="Branding API">
+        <bundle>mvn:ddf.distribution/zookeeper-config-persistence/${project.version}</bundle>
+    </feature>
+
     <feature name="ddf-branding" version="${project.version}" description="DDF Branding">
         <feature prerequisite="true">web-container</feature>
         <feature prerequisite="true">branding-api</feature>
