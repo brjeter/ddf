@@ -110,6 +110,9 @@
                                 <descriptor>
                                     mvn:org.codice.ddf.broker/broker-app/${project.version}/xml/features
                                 </descriptor>
+                                <descriptor>
+                                    mvn:org.apache.karaf.cellar/apache-karaf-cellar/${karaf.cellar.version}/xml/features
+                                </descriptor>
                             </descriptors>
                             <repository>${setup.folder}/${karaf.folder}/system</repository>
                         </configuration>
@@ -357,6 +360,13 @@
             <groupId>ddf.distribution</groupId>
             <artifactId>install-profiles</artifactId>
             <version>${project.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf.cellar</groupId>
+            <artifactId>apache-karaf-cellar</artifactId>
+            <version>${karaf.cellar.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>

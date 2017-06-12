@@ -26,6 +26,7 @@
     <name>DDF Distribution</name>
     <properties>
         <sitename.default>ddf.distribution</sitename.default>
+        <karaf.cellar.version>4.0.4</karaf.cellar.version>
     </properties>
     <modules>
         <module>sdk</module>
