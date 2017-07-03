@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
+import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
@@ -82,19 +83,20 @@ public class ConfigurationAdminMigration {
             Configuration[] configurations = configurationAdmin.listConfigurations(FILTER);
             if (configurations != null) {
                 for (Configuration configuration : configurations) {
+                    String filename = getFileName(configuration);
                     Path exportedFilePath = etcDirectory.resolve(
-                            configuration.getPid() + configurationFileExtension);
+                            filename);
                     try {
                         configurationFileFactory.createConfigurationFile(configuration.getProperties())
                                 .exportConfig(exportedFilePath.toString());
                     } catch (ConfigurationFileException e) {
                         LOGGER.info("Could not create configuration file {} for configuration {}.",
                                 exportedFilePath,
-                                configuration.getPid());
+                                filename);
                         throw new ExportMigrationException(e);
                     } catch (IOException e) {
                         LOGGER.info("Could not export configuration {} to {}.",
-                                configuration.getPid(),
+                                filename,
                                 exportedFilePath);
                         throw new ExportMigrationException(e);
                     }
@@ -107,6 +109,15 @@ public class ConfigurationAdminMigration {
             LOGGER.info("There was an issue retrieving configurations from ConfigurationAdmin: {}",
                     e.getMessage());
             throw new UnexpectedMigrationException("Export failed", e);
+        }
+    }
+
+    private String getFileName(Configuration configuration) {
+        Object filename = configuration.getProperties().get("felix.fileinstall.filename");
+        if (filename != null) {
+            return filename.toString().substring(filename.toString().lastIndexOf("/") + 1);
+        } else {
+            return configuration.getFactoryPid() + "-" + UUID.randomUUID() + configurationFileExtension;
         }
     }
 
