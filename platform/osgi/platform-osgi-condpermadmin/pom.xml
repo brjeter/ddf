@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.enterprise</artifactId>
-            <version>${osgi.version}</version>
+            <version>${osgi.enterprise.version}</version>
         </dependency>
         <dependency>
             <groupId>ddf.platform.osgi</groupId>
@@ -61,7 +61,7 @@
         <dependency>
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.osgi</artifactId>
-            <version>3.11.3</version>
+            <version>3.12.50</version>
             <scope>test</scope>
         </dependency>
         <dependency>

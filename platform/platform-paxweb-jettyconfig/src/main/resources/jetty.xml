@@ -33,11 +33,12 @@
 <!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//
 DTD Configure//EN" "http://jetty.mortbay.org/configure_9_0.dtd">
 
-<Configure class="org.eclipse.jetty.server.Server">
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
 
     <Call name="setSessionIdManager">
         <Arg>
             <New class="org.codice.ddf.security.session.AttributeSharingHashSessionIdManager">
+                <Arg><Ref refid="Server" /></Arg>
             </New>
         </Arg>
     </Call>
