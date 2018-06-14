@@ -48,8 +48,18 @@ public class ApplicationImpl implements Application {
   public BundleInfo bundleToBundleInfo(Bundle bundle) {
     return new BundleInfo() {
       @Override
+      public boolean isBlacklisted() {
+        return false;
+      }
+
+      @Override
       public String getLocation() {
         return bundle.getLocation();
+      }
+
+      @Override
+      public String getOriginalLocation() {
+        return null;
       }
 
       @Override
@@ -65,6 +75,11 @@ public class ApplicationImpl implements Application {
       @Override
       public boolean isDependency() {
         return false;
+      }
+
+      @Override
+      public BundleOverrideMode isOverriden() {
+        return null;
       }
     };
   }
