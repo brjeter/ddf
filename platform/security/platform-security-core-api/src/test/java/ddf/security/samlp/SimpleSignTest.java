@@ -26,6 +26,7 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.Security;
 import java.security.cert.Certificate;
 import java.util.Base64;
 import java.util.zip.Deflater;
@@ -39,6 +40,7 @@ import org.apache.wss4j.common.crypto.Merlin;
 import org.apache.wss4j.common.crypto.PasswordEncryptor;
 import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.apache.wss4j.common.util.DOM2Writer;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.joda.time.DateTime;
@@ -77,6 +79,7 @@ public class SimpleSignTest {
   @BeforeClass
   public static void init() {
     OpenSAMLUtil.initSamlEngine();
+    Security.addProvider(new BouncyCastleProvider());
   }
 
   @Before
