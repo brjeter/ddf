@@ -150,7 +150,7 @@
                         <_wab>
                             src/main/webapp,${project.build.directory}/${project.build.finalName}
                         </_wab>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                 `       <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Embed-Dependency>
                             commons-lang,
                             jetty-servlets,

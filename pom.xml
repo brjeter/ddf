@@ -143,9 +143,10 @@
         <lux.woodstox.version>4.1.1</lux.woodstox.version>
         <commons-codec.version>1.11</commons-codec.version>
         <spring.version>5.0.4.RELEASE</spring.version>
-        <jetty.version>9.3.14.v20161028</jetty.version>
-        <pax.cdi.version>0.12.0</pax.cdi.version>
-        <pax.web.version>6.0.9</pax.web.version>
+        <!--<jetty.version>9.3.14.v20161028</jetty.version>-->
+        <jetty.version>9.4.6.v20170531</jetty.version>
+        <pax.cdi.version>1.0.0</pax.cdi.version>
+        <pax.web.version>7.0.0</pax.web.version>
         <validation.version>1.1.0.Final</validation.version>
         <commons-configuration.version>1.10</commons-configuration.version>
         <commons-csv.version>1.4</commons-csv.version>
@@ -168,7 +169,7 @@
         <wss4j.neethi.version>3.1.0</wss4j.neethi.version>
         <javax-el.version>3.0.0</javax-el.version>
         <saxon.version>9.6.0-4</saxon.version>
-        <org.ops4j.pax.swissbox.version>1.8.0</org.ops4j.pax.swissbox.version>
+        <org.ops4j.pax.swissbox.version>1.8.3</org.ops4j.pax.swissbox.version>
         <abdera.osgi.version>1.1.3_2</abdera.osgi.version>
         <protobuf.version>3.1.0</protobuf.version>
         <servicemix-depends.version>1.4.0</servicemix-depends.version>
@@ -286,7 +287,7 @@ This Feature has been *DEPRECATED* and will be removed in a future version.
         <gib.baseBranch>HEAD</gib.baseBranch>
         <gib.enabled>false</gib.enabled>
         <gib.failOnError>false</gib.failOnError>
-        <pax.url.version>2.5.2</pax.url.version>
+        <pax.url.version>2.5.4</pax.url.version>
         <joda-convert.version>1.7</joda-convert.version>
 
         <!-- Be warned! Changing the osgi version here could impact platform-osgi-configadmin since we
