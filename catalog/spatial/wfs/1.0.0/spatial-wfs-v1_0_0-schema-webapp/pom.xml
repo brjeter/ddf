@@ -46,10 +46,7 @@
                             jetty-servlets
                         </Embed-Dependency>
                         <Import-Package>
-                            javax.xml.bind,
-                            javax.xml.bind.annotation,
-                            javax.xml.bind.annotation.adapters,
-                            javax.xml.namespace
+                            *
                         </Import-Package>
                     </instructions>
                 </configuration>
