@@ -213,7 +213,8 @@ public class SimpleSignTest {
             URLEncoder.encode(RELAY_STATE_VAL, "UTF-8"),
             SIG_ALG,
             URLEncoder.encode(signatureAlgorithm, "UTF-8"));
-    boolean valid = simpleSign.validateSignature(signedMessage, signatureString, dsaCert);
+    boolean valid =
+        simpleSign.validateSignature(signatureAlgorithm, signedMessage, signatureString, dsaCert);
     assertTrue("Signature was expected to be valid", valid);
   }
 
@@ -249,7 +250,7 @@ public class SimpleSignTest {
             URLEncoder.encode(RELAY_STATE_VAL, "UTF-8"),
             SIG_ALG,
             URLEncoder.encode(signatureAlgorithm, "UTF-8"));
-    simpleSign.validateSignature(signedMessage, signatureString, dsaCert);
+    simpleSign.validateSignature(signatureAlgorithm, signedMessage, signatureString, dsaCert);
   }
 
   /**

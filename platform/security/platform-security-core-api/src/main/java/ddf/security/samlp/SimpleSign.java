@@ -13,9 +13,9 @@
  */
 package ddf.security.samlp;
 
+import static com.sun.org.apache.xml.internal.security.signature.XMLSignature.ALGO_ID_SIGNATURE_DSA_SHA256;
 import static org.apache.commons.lang.CharEncoding.UTF_8;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -30,7 +30,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.stream.XMLStreamException;
@@ -51,6 +50,7 @@ import org.apache.wss4j.dom.saml.WSSSAMLKeyInfoProcessor;
 import org.apache.wss4j.dom.validate.Credential;
 import org.apache.wss4j.dom.validate.SignatureTrustValidator;
 import org.apache.wss4j.dom.validate.Validator;
+import org.apache.xml.security.algorithms.JCEMapper;
 import org.opensaml.saml.common.SAMLObjectContentReference;
 import org.opensaml.saml.common.SignableSAMLObject;
 import org.opensaml.saml.saml2.core.Assertion;
@@ -72,19 +72,11 @@ public class SimpleSign {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SimpleSign.class);
 
-  // Should be removed in favor of a lookup through third-party library when one is found.
-  private static final Map<String, String> RFC5698_DSSC_OID_TO_URI_MAP =
-      ImmutableMap.<String, String>builder()
-          .put("1.3.14.3.2.26", WSS4JConstants.SHA1)
-          .put("2.16.840.1.101.3.4.2.4", "http://www.w3.org/2001/04/xmldsig-more#sha224")
-          .put("2.16.840.1.101.3.4.2.2", WSS4JConstants.SHA384)
-          .put("1.2.840.113549.1.1.4", "http://www.w3.org/2001/04/xmldsig-more#rsa-md5")
-          .put("1.2.840.113549.1.1.5", WSS4JConstants.RSA)
-          .put("1.2.840.113549.1.1.11", WSS4JConstants.RSA_SHA256)
-          .put("1.2.840.113549.1.1.12", "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384")
-          .put("1.2.840.113549.1.1.13", "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512")
-          .put("1.2.840.10040.4.3", WSS4JConstants.DSA)
-          .build();
+  private static final String RSA_ALGO_URI = WSS4JConstants.RSA;
+  private static final String RSA_ALGO_JCE = JCEMapper.translateURItoJCEID(WSS4JConstants.RSA);
+  private static final String DSA_ALGO_URI = ALGO_ID_SIGNATURE_DSA_SHA256;
+  private static final String DSA_ALGO_JCE =
+      JCEMapper.translateURItoJCEID(ALGO_ID_SIGNATURE_DSA_SHA256);
 
   private final SystemCrypto crypto;
 
@@ -198,14 +190,12 @@ public class SimpleSign {
 
   private java.security.Signature getSignature(X509Certificate certificate)
       throws SignatureException {
-    String jceSigAlgo = certificate.getSigAlgName();
-
     java.security.Signature signature;
     try {
       if ("DSA".equalsIgnoreCase(certificate.getPublicKey().getAlgorithm())) {
-        signature = java.security.Signature.getInstance(jceSigAlgo, "BC");
+        signature = java.security.Signature.getInstance(DSA_ALGO_JCE, "BC");
       } else {
-        signature = java.security.Signature.getInstance(jceSigAlgo);
+        signature = java.security.Signature.getInstance(RSA_ALGO_JCE);
       }
     } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
       throw new SignatureException(e);
@@ -214,14 +204,10 @@ public class SimpleSign {
   }
 
   private String getSignatureAlgorithmURI(X509Certificate certificate) {
-    String sigAlgoUri = RFC5698_DSSC_OID_TO_URI_MAP.get(certificate.getSigAlgOID());
-
-    if (sigAlgoUri == null) {
-      sigAlgoUri =
-          ("DSA".equalsIgnoreCase(certificate.getPublicKey().getAlgorithm()))
-              ? WSS4JConstants.SHA384
-              : WSS4JConstants.RSA;
-    }
+    String sigAlgoUri =
+        ("DSA".equalsIgnoreCase(certificate.getPublicKey().getAlgorithm()))
+            ? DSA_ALGO_URI
+            : RSA_ALGO_URI;
 
     LOGGER.debug("Using Signature algorithm {}", sigAlgoUri);
     return sigAlgoUri;
@@ -260,7 +246,10 @@ public class SimpleSign {
   }
 
   public boolean validateSignature(
-      String queryParamsToValidate, String encodedSignature, @Nullable String encodedPublicKey)
+      String sigAlg,
+      String queryParamsToValidate,
+      String encodedSignature,
+      @Nullable String encodedPublicKey)
       throws SignatureException {
     if (encodedPublicKey == null) {
       LOGGER.warn(
@@ -274,7 +263,20 @@ public class SimpleSign {
           certificateFactory.generateCertificate(
               new ByteArrayInputStream(Base64.getMimeDecoder().decode(encodedPublicKey)));
 
-      java.security.Signature sig = getSignature((X509Certificate) certificate);
+      java.security.Signature sig;
+      String jceSigAlg = JCEMapper.translateURItoJCEID(sigAlg);
+
+      if (jceSigAlg == null) {
+        throw new SignatureException(
+            new NoSuchAlgorithmException(
+                String.format("The Signature Algorithm %s is not supported.", sigAlg)));
+      }
+
+      try {
+        sig = java.security.Signature.getInstance(jceSigAlg);
+      } catch (NoSuchAlgorithmException e) {
+        throw new SignatureException(e);
+      }
 
       sig.initVerify(certificate.getPublicKey());
       sig.update(queryParamsToValidate.getBytes(StandardCharsets.UTF_8));
@@ -406,6 +408,7 @@ public class SimpleSign {
   }
 
   public static class SignatureException extends Exception {
+
     public SignatureException() {}
 
     public SignatureException(Throwable cause) {
