@@ -41,7 +41,6 @@ public class ErrorPage {
   }
 
   public void registerErrorCodes() {
-
     for (Status errorCode : errorCodes) {
       webContainer.registerErrorPage(
           errorCode.toString(), "/ErrorServlet", webContainer.getDefaultSharedHttpContext());
