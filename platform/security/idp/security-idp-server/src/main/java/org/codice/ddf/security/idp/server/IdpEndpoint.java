@@ -100,7 +100,6 @@ import javax.xml.soap.SOAPPart;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import net.shibboleth.utilities.java.support.logic.ConstraintViolationException;
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.binding.soap.Soap11;
 import org.apache.cxf.binding.soap.SoapMessage;
@@ -114,7 +113,6 @@ import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.apache.wss4j.common.saml.builder.SAML2Constants;
 import org.apache.wss4j.common.util.DOM2Writer;
-import org.boon.Boon;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.platform.util.StandardThreadFactoryBuilder;
@@ -651,127 +649,133 @@ public class IdpEndpoint implements Idp, SessionHandler {
       Binding binding,
       String originalBinding)
       throws WSSecurityException {
-    String responseStr;
-    AuthnRequest authnRequest = null;
-    try {
-      Map<String, Object> responseMap = new HashMap<>();
-      binding.validator().validateRelayState(relayState, strictRelayState);
-      authnRequest = binding.decoder().decodeRequest(samlRequest);
-      authnRequest.getIssueInstant();
-      binding
-          .validator()
-          .validateAuthnRequest(
-              authnRequest,
-              samlRequest,
-              relayState,
-              signatureAlgorithm,
-              signature,
-              strictSignature);
-      if (!request.isSecure()) {
-        throw new IllegalArgumentException(AUTHN_REQUEST_MUST_USE_TLS);
-      }
-      X509Certificate[] certs = (X509Certificate[]) request.getAttribute(CERTIFICATES_ATTR);
-      boolean hasCerts = (certs != null && certs.length > 0);
-      boolean hasCookie = hasValidCookie(request, authnRequest.isForceAuthn());
-      if ((authnRequest.isPassive() && hasCerts) || hasCookie) {
-        LOGGER.debug("Received Passive & PKI AuthnRequest.");
-        org.opensaml.saml.saml2.core.Response samlpResponse;
-        try {
-          binding = getResponseBinding(authnRequest);
-
-          samlpResponse =
-              handleLogin(
-                  authnRequest,
-                  PKI,
-                  request,
-                  null,
-                  binding,
-                  authnRequest.isPassive(),
-                  hasCookie,
-                  authnRequest.getSignature() != null || signature != null);
-          LOGGER.debug("Passive & PKI AuthnRequest logged in successfully.");
-        } catch (SecurityServiceException e) {
-          LOGGER.debug(e.getMessage(), e);
-          return getErrorResponse(relayState, authnRequest, StatusCode.AUTHN_FAILED, binding);
-        } catch (WSSecurityException e) {
-          LOGGER.debug(e.getMessage(), e);
-          return getErrorResponse(relayState, authnRequest, StatusCode.REQUEST_DENIED, binding);
-        } catch (ConstraintViolationException e) {
-          LOGGER.debug(e.getMessage(), e);
-          return getErrorResponse(
-              relayState, authnRequest, StatusCode.REQUEST_UNSUPPORTED, binding);
-        } catch (IdpException e) {
-          LOGGER.debug(e.getMessage(), e);
-          return getErrorResponse(
-              relayState, authnRequest, StatusCode.UNSUPPORTED_BINDING, binding);
-        }
-        LOGGER.debug("Returning Passive & PKI SAML Response.");
-        NewCookie cookie = null;
-        if (hasCookie) {
-          cookieCache.addActiveSp(
-              getCookie(request).getValue(), authnRequest.getIssuer().getValue());
-        } else {
-          cookie = createCookie(request, samlpResponse);
-          if (cookie != null) {
-            cookieCache.addActiveSp(cookie.getValue(), authnRequest.getIssuer().getValue());
-          }
-        }
-        logAddedSp(authnRequest);
-
-        return binding.creator().getSamlpResponse(relayState, authnRequest, samlpResponse, cookie);
-      } else {
-        LOGGER.debug("Building the JSON map to embed in the index.html page for login.");
-        responseMap.put(PKI, hasCerts);
-        responseMap.put(GUEST, guestAccess);
-        // Using the ORIGINAL request
-        // SAML Spec: "The relying party MUST therefore perform the verification step using the
-        // original URL-encoded values it received on the query string. It is not sufficient to
-        // re-encode the parameters after they have been processed by software because the resulting
-        // encoding may not match the signer's encoding".
-        responseMap.put(SAML_REQ, samlRequest);
-        responseMap.put(RELAY_STATE, relayState);
-        String assertionConsumerServiceURL =
-            binding.creator().getAssertionConsumerServiceURL(authnRequest);
-        responseMap.put(ACS_URL, assertionConsumerServiceURL);
-        responseMap.put(SSOConstants.SIG_ALG, signatureAlgorithm);
-        responseMap.put(SSOConstants.SIGNATURE, signature);
-        responseMap.put(ORIGINAL_BINDING, originalBinding);
-      }
-
-      String json = Boon.toJson(responseMap);
-
-      LOGGER.debug("Returning index.html page.");
-      responseStr = indexHtml.replace(IDP_STATE_OBJ, json);
-      return Response.ok(responseStr).build();
-    } catch (IllegalArgumentException e) {
-      LOGGER.debug(e.getMessage(), e);
-      if (authnRequest != null) {
-        try {
-          return getErrorResponse(
-              relayState, authnRequest, StatusCode.REQUEST_UNSUPPORTED, binding);
-        } catch (IOException | SimpleSign.SignatureException e1) {
-          LOGGER.debug(e1.getMessage(), e1);
-        }
-      }
-    } catch (UnsupportedOperationException e) {
-      LOGGER.debug(e.getMessage(), e);
-      if (authnRequest != null) {
-        try {
-          return getErrorResponse(
-              relayState, authnRequest, StatusCode.UNSUPPORTED_BINDING, binding);
-        } catch (IOException | SimpleSign.SignatureException e1) {
-          LOGGER.debug(e1.getMessage(), e1);
-        }
-      }
-    } catch (SimpleSign.SignatureException e) {
-      LOGGER.debug("Unable to validate AuthRequest Signature", e);
-    } catch (IOException e) {
-      LOGGER.debug("Unable to decode AuthRequest", e);
-    } catch (ValidationException e) {
-      LOGGER.debug("AuthnRequest schema validation failed.", e);
-    }
-
-    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+    throw new RuntimeException();
+    //    String responseStr;
+    //    AuthnRequest authnRequest = null;
+    //    try {
+    //      Map<String, Object> responseMap = new HashMap<>();
+    //      binding.validator().validateRelayState(relayState, strictRelayState);
+    //      authnRequest = binding.decoder().decodeRequest(samlRequest);
+    //      authnRequest.getIssueInstant();
+    //      binding
+    //          .validator()
+    //          .validateAuthnRequest(
+    //              authnRequest,
+    //              samlRequest,
+    //              relayState,
+    //              signatureAlgorithm,
+    //              signature,
+    //              strictSignature);
+    //      if (!request.isSecure()) {
+    //        throw new IllegalArgumentException(AUTHN_REQUEST_MUST_USE_TLS);
+    //      }
+    //      X509Certificate[] certs = (X509Certificate[]) request.getAttribute(CERTIFICATES_ATTR);
+    //      boolean hasCerts = (certs != null && certs.length > 0);
+    //      boolean hasCookie = hasValidCookie(request, authnRequest.isForceAuthn());
+    //      if ((authnRequest.isPassive() && hasCerts) || hasCookie) {
+    //        LOGGER.debug("Received Passive & PKI AuthnRequest.");
+    //        org.opensaml.saml.saml2.core.Response samlpResponse;
+    //        try {
+    //          binding = getResponseBinding(authnRequest);
+    //
+    //          samlpResponse =
+    //              handleLogin(
+    //                  authnRequest,
+    //                  PKI,
+    //                  request,
+    //                  null,
+    //                  binding,
+    //                  authnRequest.isPassive(),
+    //                  hasCookie,
+    //                  authnRequest.getSignature() != null || signature != null);
+    //          LOGGER.debug("Passive & PKI AuthnRequest logged in successfully.");
+    //        } catch (SecurityServiceException e) {
+    //          LOGGER.debug(e.getMessage(), e);
+    //          return getErrorResponse(relayState, authnRequest, StatusCode.AUTHN_FAILED, binding);
+    //        } catch (WSSecurityException e) {
+    //          LOGGER.debug(e.getMessage(), e);
+    //          return getErrorResponse(relayState, authnRequest, StatusCode.REQUEST_DENIED,
+    // binding);
+    //        } catch (ConstraintViolationException e) {
+    //          LOGGER.debug(e.getMessage(), e);
+    //          return getErrorResponse(
+    //              relayState, authnRequest, StatusCode.REQUEST_UNSUPPORTED, binding);
+    //        } catch (IdpException e) {
+    //          LOGGER.debug(e.getMessage(), e);
+    //          return getErrorResponse(
+    //              relayState, authnRequest, StatusCode.UNSUPPORTED_BINDING, binding);
+    //        }
+    //        LOGGER.debug("Returning Passive & PKI SAML Response.");
+    //        NewCookie cookie = null;
+    //        if (hasCookie) {
+    //          cookieCache.addActiveSp(
+    //              getCookie(request).getValue(), authnRequest.getIssuer().getValue());
+    //        } else {
+    //          cookie = createCookie(request, samlpResponse);
+    //          if (cookie != null) {
+    //            cookieCache.addActiveSp(cookie.getValue(), authnRequest.getIssuer().getValue());
+    //          }
+    //        }
+    //        logAddedSp(authnRequest);
+    //
+    //        return binding.creator().getSamlpResponse(relayState, authnRequest, samlpResponse,
+    // cookie);
+    //      } else {
+    //        LOGGER.debug("Building the JSON map to embed in the index.html page for login.");
+    //        responseMap.put(PKI, hasCerts);
+    //        responseMap.put(GUEST, guestAccess);
+    //        // Using the ORIGINAL request
+    //        // SAML Spec: "The relying party MUST therefore perform the verification step using
+    // the
+    //        // original URL-encoded values it received on the query string. It is not sufficient
+    // to
+    //        // re-encode the parameters after they have been processed by software because the
+    // resulting
+    //        // encoding may not match the signer's encoding".
+    //        responseMap.put(SAML_REQ, samlRequest);
+    //        responseMap.put(RELAY_STATE, relayState);
+    //        String assertionConsumerServiceURL =
+    //            binding.creator().getAssertionConsumerServiceURL(authnRequest);
+    //        responseMap.put(ACS_URL, assertionConsumerServiceURL);
+    //        responseMap.put(SSOConstants.SIG_ALG, signatureAlgorithm);
+    //        responseMap.put(SSOConstants.SIGNATURE, signature);
+    //        responseMap.put(ORIGINAL_BINDING, originalBinding);
+    //      }
+    //
+    //      String json = Boon.toJson(responseMap);
+    //
+    //      LOGGER.debug("Returning index.html page.");
+    //      responseStr = indexHtml.replace(IDP_STATE_OBJ, json);
+    //      return Response.ok(responseStr).build();
+    //    } catch (IllegalArgumentException e) {
+    //      LOGGER.debug(e.getMessage(), e);
+    //      if (authnRequest != null) {
+    //        try {
+    //          return getErrorResponse(
+    //              relayState, authnRequest, StatusCode.REQUEST_UNSUPPORTED, binding);
+    //        } catch (IOException | SimpleSign.SignatureException e1) {
+    //          LOGGER.debug(e1.getMessage(), e1);
+    //        }
+    //      }
+    //    } catch (UnsupportedOperationException e) {
+    //      LOGGER.debug(e.getMessage(), e);
+    //      if (authnRequest != null) {
+    //        try {
+    //          return getErrorResponse(
+    //              relayState, authnRequest, StatusCode.UNSUPPORTED_BINDING, binding);
+    //        } catch (IOException | SimpleSign.SignatureException e1) {
+    //          LOGGER.debug(e1.getMessage(), e1);
+    //        }
+    //      }
+    //    } catch (SimpleSign.SignatureException e) {
+    //      LOGGER.debug("Unable to validate AuthRequest Signature", e);
+    //    } catch (IOException e) {
+    //      LOGGER.debug("Unable to decode AuthRequest", e);
+    //    } catch (ValidationException e) {
+    //      LOGGER.debug("AuthnRequest schema validation failed.", e);
+    //    }
+    //
+    //    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
   }
 
   void logAddedSp(AuthnRequest authnRequest) {

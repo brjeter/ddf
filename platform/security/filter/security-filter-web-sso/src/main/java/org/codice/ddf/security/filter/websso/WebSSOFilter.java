@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.SecurityFilter;
 import org.codice.ddf.security.handler.api.AuthenticationHandler;
-import org.codice.ddf.security.handler.api.BaseAuthenticationToken;
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.handler.api.InvalidSAMLReceivedException;
 import org.codice.ddf.security.policy.context.ContextPolicy;
@@ -85,42 +84,44 @@ public class WebSSOFilter implements SecurityFilter {
       ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
       throws IOException, ServletException {
     LOGGER.debug("Performing doFilter() on WebSSOFilter");
-    HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
-    HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-
-    final String path = httpRequest.getRequestURI();
-
-    LOGGER.debug("Handling request for path {}", path);
-
-    String realm = BaseAuthenticationToken.DEFAULT_REALM;
-    boolean isWhiteListed = false;
-
-    if (contextPolicyManager != null) {
-      ContextPolicy policy = contextPolicyManager.getContextPolicy(path);
-      if (policy != null) {
-        realm = policy.getRealm();
-      }
-
-      isWhiteListed = contextPolicyManager.isWhiteListed(path);
-    }
-
-    // set this so the login filter can easily determine the realm
-    servletRequest.setAttribute(ContextPolicy.ACTIVE_REALM, realm);
-
-    if (isWhiteListed) {
-      LOGGER.debug(
-          "Context of {} has been whitelisted, adding a NO_AUTH_POLICY attribute to the header.",
-          path);
-      servletRequest.setAttribute(ContextPolicy.NO_AUTH_POLICY, true);
-      filterChain.doFilter(httpRequest, httpResponse);
-    } else {
-      // make sure request didn't come in with NO_AUTH_POLICY set
-      servletRequest.setAttribute(ContextPolicy.NO_AUTH_POLICY, null);
-
-      // now handle the request and set the authentication token
-      LOGGER.debug("Handling request for {} in security realm {}.", path, realm);
-      handleRequest(httpRequest, httpResponse, filterChain, getHandlerList(path));
-    }
+    throw new RuntimeException();
+    //    HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
+    //    HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
+    //
+    //    final String path = httpRequest.getRequestURI();
+    //
+    //    LOGGER.debug("Handling request for path {}", path);
+    //
+    //    String realm = BaseAuthenticationToken.DEFAULT_REALM;
+    //    boolean isWhiteListed = false;
+    //
+    //    if (contextPolicyManager != null) {
+    //      ContextPolicy policy = contextPolicyManager.getContextPolicy(path);
+    //      if (policy != null) {
+    //        realm = policy.getRealm();
+    //      }
+    //
+    //      isWhiteListed = contextPolicyManager.isWhiteListed(path);
+    //    }
+    //
+    //    // set this so the login filter can easily determine the realm
+    //    servletRequest.setAttribute(ContextPolicy.ACTIVE_REALM, realm);
+    //
+    //    if (isWhiteListed) {
+    //      LOGGER.debug(
+    //          "Context of {} has been whitelisted, adding a NO_AUTH_POLICY attribute to the
+    // header.",
+    //          path);
+    //      servletRequest.setAttribute(ContextPolicy.NO_AUTH_POLICY, true);
+    //      filterChain.doFilter(httpRequest, httpResponse);
+    //    } else {
+    //      // make sure request didn't come in with NO_AUTH_POLICY set
+    //      servletRequest.setAttribute(ContextPolicy.NO_AUTH_POLICY, null);
+    //
+    //      // now handle the request and set the authentication token
+    //      LOGGER.debug("Handling request for {} in security realm {}.", path, realm);
+    //      handleRequest(httpRequest, httpResponse, filterChain, getHandlerList(path));
+    //    }
   }
 
   private void handleRequest(

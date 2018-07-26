@@ -64,6 +64,7 @@
         <feature version="${spring.version}_1">spring</feature>
         <feature>pax-http-jetty</feature>
         <feature>pax-jetty</feature>
+        <feature>error</feature>
         <feature>common-system</feature>
         <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
         <bundle>mvn:ddf.platform/platform-filter-delegate/${project.version}</bundle>
@@ -117,6 +118,7 @@
         <feature>apache-commons</feature>
         <feature>pax-jetty</feature>
         <feature>session-invalidator</feature>
+        <feature>error</feature>
         <bundle>wrap:mvn:net.jodah/failsafe/${jodah-failsafe.version}</bundle>
         <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
         <feature>common-system</feature>

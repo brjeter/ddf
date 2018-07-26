@@ -55,6 +55,34 @@ DTD Configure//EN" "http://jetty.mortbay.org/configure_9_0.dtd">
               class="org.eclipse.jetty.server.session.NullSessionCacheFactory"/>
         </Arg>
     </Call>
+    <!--ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);-->
+    <!--context.addServlet(new ServletHolder(new TestServlet()), "/");-->
+    <Get name="handler">
+        <Call name="addHandler">
+            <Arg>
+                <New class="org.eclipse.jetty.servlet.ServletContextHandler">
+                    <Set name="contextPath">/ErrorServlet</Set>
+                    <Call name="addServlet">
+                        <Arg>org.codice.ddf.platform.error.servlet.ErrorServlet</Arg>
+                        <Arg>/</Arg>
+                    </Call>
+                </New>
+            </Arg>
+        </Call>
+    </Get>
+    <!--handler.addServletWithMapping(-->
+    <!--"org.codice.ddf.platform.error.servlet.ErrorServlet", "/ErrorServlet");-->
+    <!--ErrorPageErrorHandler errorPageErrorHandler = new ErrorPageErrorHandler();-->
+    <!--errorPageErrorHandler.addErrorPage(500, "/ErrorServlet");-->
+    <!--httpServiceContext.setErrorHandler(errorPageErrorHandler);-->
+    <!--<Set name="errorHandler">-->
+          <!--<New class="org.eclipse.jetty.servlet.ErrorPageErrorHandler">-->
+              <!--<Call name="addErrorPage">-->
+                  <!--<Arg type="int">500</Arg>-->
+                  <!--<Arg type="String">/ErrorServlet</Arg>-->
+              <!--</Call>-->
+          <!--</New>-->
+    <!--</Set>-->
 
     <!--<Get name="handler">-->
         <!--<Call name="addHandler">-->

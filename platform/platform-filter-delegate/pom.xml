@@ -67,6 +67,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>ddf.platform.error</groupId>
+            <artifactId>platform-error-servlet</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.osgi</groupId>
             <artifactId>spring-osgi-mock</artifactId>
             <version>${spring-osgi.version}</version>
@@ -86,7 +91,8 @@
                             *
                         </Import-Package>
                         <Embed-Dependency>
-                            platform-util
+                            platform-util,
+                            platform-error-servlet
                         </Embed-Dependency>
                         <!--only export SecurityFilter, not DelegateServletFilter-->
                         <Export-Package>

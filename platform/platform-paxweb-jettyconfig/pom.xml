@@ -74,6 +74,11 @@
             <artifactId>rest-assured</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ddf.platform.error</groupId>
+            <artifactId>platform-error-servlet</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -87,7 +92,8 @@
                         <Embed-Dependency>
                             platform-util,
                             logback-core,
-                            logback-access
+                            logback-access,
+                            platform-error-servlet
                         </Embed-Dependency>
                         <Import-Package>
                             !org.apache.catalina,

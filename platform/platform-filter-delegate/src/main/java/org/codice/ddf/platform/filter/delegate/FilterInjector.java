@@ -26,9 +26,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.SessionCookieConfig;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import org.codice.ddf.platform.error.servlet.ErrorServlet;
 import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
@@ -138,6 +141,21 @@ public class FilterInjector implements EventListenerHook {
         if (sessionHandler != null) {
           sessionHandler.addEventListener(new WrapperListener());
         }
+
+        ServletHolder errorServletHolder = new ServletHolder(new ErrorServlet());
+        errorServletHolder.setServletHandler(handler);
+        try {
+          errorServletHolder.start();
+          errorServletHolder.initialize();
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+        handler.addServletWithMapping(errorServletHolder, "/ErrorServlet");
+        //        handler.addServletWithMapping(
+        //            "org.codice.ddf.platform.error.servlet.ErrorServlet", "/ErrorServlet");
+        ErrorPageErrorHandler errorPageErrorHandler = new ErrorPageErrorHandler();
+        errorPageErrorHandler.addErrorPage(500, "/ErrorServlet");
+        httpServiceContext.setErrorHandler(errorPageErrorHandler);
 
         if (handler != null) {
           try {
