@@ -31,11 +31,13 @@
 package org.codice.ddf.security.session;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,6 +45,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import org.codice.ddf.configuration.DictionaryMap;
 import org.codice.ddf.platform.session.api.HttpSessionInvalidator;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.session.DefaultSessionIdManager;
 import org.eclipse.jetty.server.session.SessionHandler;
@@ -147,9 +150,15 @@ public class AttributeSharingHashSessionIdManager extends DefaultSessionIdManage
    * @param id the session id
    */
   private void invalidateSession(String id) {
-    SessionHandler[] tmp = (SessionHandler[]) _server.getChildHandlersByClass(SessionHandler.class);
-    if (tmp != null && tmp.length > 0) {
-      tmp[0].getSession(id).invalidate();
+    Handler[] tmp = _server.getChildHandlersByClass(SessionHandler.class);
+    if (tmp != null) {
+      Arrays.stream(tmp)
+          .filter(Objects::nonNull)
+          .findFirst()
+          .map(SessionHandler.class::cast)
+          .get()
+          .getSession(id)
+          .invalidate();
     }
   }
 

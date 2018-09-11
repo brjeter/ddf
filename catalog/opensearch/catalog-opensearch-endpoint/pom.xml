@@ -61,8 +61,7 @@
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
-            <!-- Overriding the version from the root pom due to dependency conflicts with parboiled-java -->
-            <version>6.0</version>
+            <version>5.2</version>
         </dependency>
         <!--test dependencies-->
         <dependency>
@@ -96,7 +95,9 @@
                             catalog-opensearch-api,
                             platform-util,
                             parboiled-java,
-                            parboiled-core
+                            parboiled-core,
+                            <!-- Embedding 6.0 because newer versions have a change that breaks parboiled (https://gitlab.ow2.org/asm/asm/issues/317841) -->
+                            asm
                         </Embed-Dependency>
                     </instructions>
                 </configuration>

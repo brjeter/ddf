@@ -547,7 +547,8 @@
                             org.w3c.dom,
                             org.xml.sax,
                             org.xml.sax.ext,
-                            org.xml.sax.helpers
+                            org.xml.sax.helpers,
+                            com.ctc.wstx.stax;version="[5.1,6)"
                         </Import-Package>
                     </instructions>
                 </configuration>

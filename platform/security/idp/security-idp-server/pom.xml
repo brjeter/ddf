@@ -248,6 +248,8 @@
                             !org.abego.treelayout.*,
                             com.sun.management;resolution:=optional,
                             javax.annotation;version="[1.1,2)",
+                            org.apache.xalan.processor,
+                            org.apache.wss4j.stax.setup,
                             *
                         </Import-Package>
                         <Export-Package/>
