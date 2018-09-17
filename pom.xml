@@ -111,7 +111,10 @@
         <karaf.version>4.2.0</karaf.version>
         <karaf.plugin.version>4.2.0</karaf.plugin.version>
         <felix.configadmin.version>1.8.14</felix.configadmin.version>
+
+        <!-- Equinox and the servicemix.specs may need to be updated when Karaf is upgraded -->
         <equinox.version>3.13.0</equinox.version>
+        <servicemix.specs.version>2.9.0</servicemix.specs.version>
         <!--  ################################################################################  -->
 
         <felix.framework.version>5.6.6</felix.framework.version>
@@ -213,7 +216,6 @@
         <proton.version>0.27.1</proton.version>
         <qpid-jms.version>0.33.0</qpid-jms.version>
         <!--END versions that should be kept in sync between Camel and Artemis features-->
-        <servicemix.specs.version>2.9.0</servicemix.specs.version>
         <jboss-logging.version>3.3.1.Final</jboss-logging.version>
         <jgroups.version>3.6.13.Final</jgroups.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
