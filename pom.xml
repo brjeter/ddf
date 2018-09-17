@@ -109,7 +109,6 @@
                of jetty, the overriding feature will need to be replaced and the blacklist entry
                updated to disable karaf's jetty version.-->
         <karaf.version>4.2.0</karaf.version>
-        <!-- There is a problem with version 4.1.2 of the karaf-maven-plugin for projects of type feature -->
         <karaf.plugin.version>4.2.0</karaf.plugin.version>
         <felix.configadmin.version>1.8.14</felix.configadmin.version>
         <equinox.version>3.13.0</equinox.version>
@@ -214,6 +213,7 @@
         <proton.version>0.27.1</proton.version>
         <qpid-jms.version>0.33.0</qpid-jms.version>
         <!--END versions that should be kept in sync between Camel and Artemis features-->
+        <servicemix.specs.version>2.9.0</servicemix.specs.version>
         <jboss-logging.version>3.3.1.Final</jboss-logging.version>
         <jgroups.version>3.6.13.Final</jgroups.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
@@ -291,6 +291,7 @@
         <spark.version>2.5.5</spark.version>
         <sardine.version>5.7</sardine.version>
         <xerces.version>2.11.0</xerces.version>
+        <xerces.bundle.version>2.11.0_1</xerces.bundle.version>
         <dependency-check-maven.version>3.1.1</dependency-check-maven.version>
         <jsr305.version>3.0.2_1</jsr305.version>
 
@@ -301,6 +302,7 @@
         <gib.enabled>false</gib.enabled>
         <gib.failOnError>false</gib.failOnError>
         <pax.url.version>2.5.4</pax.url.version>
+        <pax.transx.version>0.2.0</pax.transx.version>
         <joda-convert.version>1.7</joda-convert.version>
 
         <!-- Be warned! Changing the osgi version here could impact platform-osgi-configadmin since we
