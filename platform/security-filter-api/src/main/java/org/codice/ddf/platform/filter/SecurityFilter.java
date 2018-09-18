@@ -11,22 +11,17 @@
  * License is distributed along with this program and can be found at
  * <http://www.gnu.org/licenses/lgpl.html>.
  */
-package ddf.security;
+package org.codice.ddf.platform.filter;
 
-import java.io.Serializable;
-import java.security.Principal;
+import javax.servlet.Filter;
 
+/* change bundle name or move into different api bundle (which?)*/
 /**
- * This class extends {@link org.apache.shiro.subject.Subject}, {@link java.io.Serializable} and
- * {@link java.security.Principal} in order for the Subject to be accessible through the {@link
- * ddf.catalog.operation.Operation} property map.
+ * {@link SecurityFilter} is a marker interface that indicates that the {@link Filter}s will be
+ * handled by the {@link org.codice.ddf.pax.web.jetty.JettyAuthenticator} instead of injected in
+ * servlets directly.
+ *
+ * <p><b> This code is experimental. While this interface is functional and tested, it may change or
+ * be removed in a future version of the library. </b>
  */
-public interface Subject extends org.apache.shiro.subject.Subject, Serializable, Principal {
-
-  /**
-   * Returns true if the Subject is guest
-   *
-   * @return true if Subject is guest
-   */
-  public boolean isGuest();
-}
+public interface SecurityFilter extends Filter {}
