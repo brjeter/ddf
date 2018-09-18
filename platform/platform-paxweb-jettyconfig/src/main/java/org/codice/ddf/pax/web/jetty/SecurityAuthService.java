@@ -11,22 +11,18 @@
  * License is distributed along with this program and can be found at
  * <http://www.gnu.org/licenses/lgpl.html>.
  */
-package ddf.security;
+package org.codice.ddf.pax.web.jetty;
 
-import java.io.Serializable;
-import java.security.Principal;
+import org.eclipse.jetty.security.Authenticator;
+import org.ops4j.pax.web.service.AuthenticatorService;
 
-/**
- * This class extends {@link org.apache.shiro.subject.Subject}, {@link java.io.Serializable} and
- * {@link java.security.Principal} in order for the Subject to be accessible through the {@link
- * ddf.catalog.operation.Operation} property map.
- */
-public interface Subject extends org.apache.shiro.subject.Subject, Serializable, Principal {
+public class SecurityAuthService implements AuthenticatorService {
 
-  /**
-   * Returns true if the Subject is guest
-   *
-   * @return true if Subject is guest
-   */
-  public boolean isGuest();
+  @Override
+  public <T> T getAuthenticatorService(String method, Class<T> iface) {
+    if ("DDF".equals(method) && iface == Authenticator.class) {
+      return iface.cast(new JettyAuthenticator());
+    }
+    return null;
+  }
 }

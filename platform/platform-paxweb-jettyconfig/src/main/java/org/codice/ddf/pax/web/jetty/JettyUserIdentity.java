@@ -11,22 +11,33 @@
  * License is distributed along with this program and can be found at
  * <http://www.gnu.org/licenses/lgpl.html>.
  */
-package ddf.security;
+package org.codice.ddf.pax.web.jetty;
 
-import java.io.Serializable;
 import java.security.Principal;
+import javax.security.auth.Subject;
+import org.eclipse.jetty.server.UserIdentity;
 
-/**
- * This class extends {@link org.apache.shiro.subject.Subject}, {@link java.io.Serializable} and
- * {@link java.security.Principal} in order for the Subject to be accessible through the {@link
- * ddf.catalog.operation.Operation} property map.
- */
-public interface Subject extends org.apache.shiro.subject.Subject, Serializable, Principal {
+public class JettyUserIdentity implements UserIdentity {
 
-  /**
-   * Returns true if the Subject is guest
-   *
-   * @return true if Subject is guest
-   */
-  public boolean isGuest();
+  private final Subject subject;
+
+  public JettyUserIdentity(Subject subject) {
+    this.subject = subject;
+  }
+
+  @Override
+  public Subject getSubject() {
+    return subject;
+  }
+
+  @Override
+  public Principal getUserPrincipal() {
+    if (subject.getPrincipals().isEmpty()) return null;
+    return subject.getPrincipals().iterator().next();
+  }
+
+  @Override
+  public boolean isUserInRole(String role, Scope scope) {
+    return false;
+  }
 }
