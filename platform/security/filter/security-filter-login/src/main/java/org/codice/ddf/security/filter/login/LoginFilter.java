@@ -278,6 +278,7 @@ public class LoginFilter implements SecurityFilter {
                 javax.security.auth.Subject javaSubject =
                     new javax.security.auth.Subject(
                         true, securityAssertion.getPrincipals(), emptySet, emptySet);
+                httpRequest.setAttribute(SecurityConstants.SECURITY_JAVA_SUBJECT, javaSubject);
                 javax.security.auth.Subject.doAs(javaSubject, action);
               } else {
                 LOGGER.debug("Subject had no security assertion.");

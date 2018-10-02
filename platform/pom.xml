@@ -371,7 +371,7 @@
         <module>platform-scheduler</module>
         <module>security</module>
         <module>platform-commands</module>
-        <module>platform-filter-delegate</module>
+        <module>security-filter-api</module>
         <module>error</module>
         <module>platform-http-proxy</module>
         <module>admin</module>
@@ -384,5 +384,6 @@
         <module>osgi</module>
         <module>branding-registry-impl</module>
         <module>sync-installer</module>
+        <module>pax-web-jetty</module>
     </modules>
 </project>
