@@ -18,10 +18,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import org.codice.ddf.platform.filter.AuthenticationException;
+import org.codice.ddf.platform.filter.FilterChain;
 import org.codice.ddf.platform.filter.SecurityFilter;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -40,7 +41,7 @@ public class ProxyFilterChainTest {
    * @throws IOException
    */
   @Test
-  public void testDoFilter() throws IOException, ServletException {
+  public void testDoFilter() throws IOException, ServletException, AuthenticationException {
     ProxyFilterChain proxyChain = new ProxyFilterChain();
     SecurityFilter filter1 = createMockSecurityFilter("filter1");
     SecurityFilter filter2 = createMockSecurityFilter("filter2");
@@ -69,7 +70,7 @@ public class ProxyFilterChainTest {
    * @throws ServletException
    */
   @Test(expected = IllegalStateException.class)
-  public void testAddFilterAfterDo() throws IOException, ServletException {
+  public void testAddFilterAfterDo() throws IOException, AuthenticationException {
     ProxyFilterChain proxyChain = new ProxyFilterChain();
     SecurityFilter filter1 = mock(SecurityFilter.class);
     proxyChain.doFilter(mock(ServletRequest.class), mock(ServletResponse.class));
@@ -84,7 +85,7 @@ public class ProxyFilterChainTest {
    * @throws ServletException
    */
   @Test(expected = IllegalStateException.class)
-  public void testAddFiltersAfterDo() throws IOException, ServletException {
+  public void testAddFiltersAfterDo() throws IOException, AuthenticationException {
     ProxyFilterChain proxyChain = new ProxyFilterChain();
     SecurityFilter filter2 = mock(SecurityFilter.class);
     SecurityFilter filter3 = mock(SecurityFilter.class);
@@ -94,7 +95,7 @@ public class ProxyFilterChainTest {
   }
 
   private SecurityFilter createMockSecurityFilter(final String name)
-      throws IOException, ServletException {
+      throws IOException, AuthenticationException {
     SecurityFilter mockFilter = mock(SecurityFilter.class);
     Mockito.when(mockFilter.toString()).thenReturn(name);
     Mockito.doAnswer(

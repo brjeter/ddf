@@ -11,24 +11,28 @@
  * License is distributed along with this program and can be found at
  * <http://www.gnu.org/licenses/lgpl.html>.
  */
-package org.codice.ddf.security.handler.api;
+package org.codice.ddf.platform.filter;
 
-import org.codice.ddf.platform.filter.AuthenticationFailureException;
+public class AuthenticationException extends Exception {
+  private Throwable rootCause;
 
-public class InvalidSAMLReceivedException extends AuthenticationFailureException {
-  public InvalidSAMLReceivedException() {
-    super();
-  }
+  public AuthenticationException() {}
 
-  public InvalidSAMLReceivedException(String message) {
+  public AuthenticationException(String message) {
     super(message);
   }
 
-  public InvalidSAMLReceivedException(Throwable cause) {
-    super(cause);
+  public AuthenticationException(String message, Throwable rootCause) {
+    super(message, rootCause);
+    this.rootCause = rootCause;
   }
 
-  public InvalidSAMLReceivedException(String message, Throwable cause) {
-    super(message, cause);
+  public AuthenticationException(Throwable rootCause) {
+    super(rootCause);
+    this.rootCause = rootCause;
+  }
+
+  public Throwable getRootCause() {
+    return this.rootCause;
   }
 }

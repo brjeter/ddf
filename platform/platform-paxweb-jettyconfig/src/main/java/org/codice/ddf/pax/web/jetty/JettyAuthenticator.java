@@ -31,9 +31,10 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.codice.ddf.platform.filter.AuthenticationChallengeException;
+import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.platform.filter.SecurityFilter;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.IdentityService;
@@ -125,13 +126,13 @@ public class JettyAuthenticator extends LoginAuthenticator {
 
       try {
         chain.doFilter(servletRequest, servletResponse);
-      } catch (IOException | ServletException e) {
+      } catch (IOException e) {
         throw new ServerAuthException(
             "Unable to process security filter. Blocking the request processing.");
-      }
-      if (servletResponse instanceof HttpServletResponse
-          && ((HttpServletResponse) servletResponse).getStatus() >= 300) {
+      } catch (AuthenticationChallengeException e) {
         return new Authentication.Challenge() {};
+      } catch (AuthenticationException e) {
+        return new Authentication.Failure() {};
       }
     } else {
       LOGGER.debug("Did not find any SecurityFilters. Acting as a pass-through filter...");
@@ -183,18 +184,7 @@ public class JettyAuthenticator extends LoginAuthenticator {
     final ServletContext servletContext;
     final String filterName = getFilterName(securityFilterServiceReference, bundleContext);
 
-    if (request == null || request.getSession() == null) {
-      LOGGER.warn(
-          "Request does not have a servlet context. Initializing SecurityFilter {} with null ServletContext",
-          filterName);
-      servletContext = null;
-    } else {
-      servletContext = request.getSession().getServletContext();
-    }
-
-    securityFilter.init(
-        new SecurityFilterInitFilterConfig(
-            securityFilterServiceReference, servletContext, bundleContext));
+    securityFilter.init();
     keysOfInitializedSecurityFilters.add(
         getFilterKey(securityFilterServiceReference, bundleContext));
     LOGGER.debug("Initialized SecurityFilter {}", filterName);

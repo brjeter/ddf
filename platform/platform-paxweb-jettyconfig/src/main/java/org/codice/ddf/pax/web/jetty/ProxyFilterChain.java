@@ -16,11 +16,10 @@ package org.codice.ddf.pax.web.jetty;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import org.codice.ddf.platform.filter.AuthenticationException;
+import org.codice.ddf.platform.filter.FilterChain;
 import org.codice.ddf.platform.filter.SecurityFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +33,9 @@ public class ProxyFilterChain implements FilterChain {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProxyFilterChain.class);
 
-  private final LinkedList<Filter> filters;
+  private final LinkedList<SecurityFilter> filters;
 
-  private Iterator<Filter> iterator;
+  private Iterator<SecurityFilter> iterator;
 
   /** Creates a new ProxyFilterChain */
   public ProxyFilterChain() {
@@ -68,13 +67,13 @@ public class ProxyFilterChain implements FilterChain {
 
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse)
-      throws IOException, ServletException {
+      throws IOException, AuthenticationException {
     if (iterator == null) {
       iterator = filters.iterator();
     }
 
     if (iterator.hasNext()) {
-      Filter filter = iterator.next();
+      SecurityFilter filter = iterator.next();
       LOGGER.debug(
           "Calling filter {}.doFilter({}, {}, {})",
           filter.getClass().getName(),

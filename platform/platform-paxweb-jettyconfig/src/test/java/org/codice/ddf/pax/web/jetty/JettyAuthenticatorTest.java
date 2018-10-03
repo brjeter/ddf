@@ -13,11 +13,6 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -25,19 +20,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Set;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;
+import org.codice.ddf.platform.filter.AuthenticationException;
+import org.codice.ddf.platform.filter.FilterChain;
 import org.codice.ddf.platform.filter.SecurityFilter;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.ServerAuthException;
@@ -45,7 +37,6 @@ import org.eclipse.jetty.server.Request;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -81,13 +72,6 @@ public class JettyAuthenticatorTest {
         };
   }
 
-  /*
-  *   public void setConfiguration(AuthConfiguration configuration) {
-    keysOfInitializedSecurityFilters.clear();
-    if (configuration instanceof ConstraintSecurityHandler) {
-      ((ConstraintSecurityHandler) configuration).setLoginService(_loginService);
-      ((ConstraintSecurityHandler) configuration).setIdentityService(_identityService);
-    }*/
   @Test
   public void testSetConfiguration() {
     final ConstraintSecurityHandler constraintSecurityHandler =
@@ -101,9 +85,8 @@ public class JettyAuthenticatorTest {
 
   @Test
   public void testDoFilterWithSecurityFilter()
-      throws IOException, ServletException, ServerAuthException {
+      throws IOException, ServerAuthException, AuthenticationException {
     // given
-    final ServletContext servletContext = mock(ServletContext.class);
     jettyAuthenticator.setConfiguration(mock(ConstraintSecurityHandler.class));
 
     final SecurityFilter securityFilter = registerSecurityFilter(new Hashtable());
@@ -127,7 +110,7 @@ public class JettyAuthenticatorTest {
    */
   @Test
   public void testDoFilterAfterInitDelegateServletFilterWithNullFilterConfig()
-      throws ServletException, IOException, ServerAuthException {
+      throws IOException, ServerAuthException, AuthenticationException {
     // given
     jettyAuthenticator.setConfiguration(null);
 
@@ -142,11 +125,7 @@ public class JettyAuthenticatorTest {
     // then
     final InOrder inOrder = Mockito.inOrder(securityFilter);
 
-    final ArgumentCaptor<FilterConfig> argument = ArgumentCaptor.forClass(FilterConfig.class);
-    inOrder.verify(securityFilter).init(argument.capture());
-    final FilterConfig filterConfigInitArg = argument.getValue();
-    assertThat(filterConfigInitArg.getServletContext(), is(nullValue(ServletContext.class)));
-
+    inOrder.verify(securityFilter).init();
     inOrder
         .verify(securityFilter)
         .doFilter(eq(servletRequest), eq(servletResponse), any(FilterChain.class));
@@ -154,7 +133,7 @@ public class JettyAuthenticatorTest {
 
   @Test
   public void testSecurityFiltersOnlyInitializedOnce()
-      throws IOException, ServletException, ServerAuthException {
+      throws IOException, ServerAuthException, AuthenticationException {
     // given
     jettyAuthenticator.setConfiguration(mock(ConstraintSecurityHandler.class));
 
@@ -184,14 +163,14 @@ public class JettyAuthenticatorTest {
         mock(ServletRequest.class), mock(ServletResponse.class), false);
 
     // when
-    verify(securityFilter1).init(any(FilterConfig.class));
-    verify(securityFilter2).init(any(FilterConfig.class));
-    verify(securityFilter3).init(any(FilterConfig.class));
+    verify(securityFilter1).init();
+    verify(securityFilter2).init();
+    verify(securityFilter3).init();
   }
 
   @Test
   public void testInitializeSecurityFilter()
-      throws ServletException, IOException, ServerAuthException {
+      throws IOException, ServerAuthException, AuthenticationException {
     // given
     final ConstraintSecurityHandler constraintSecurityHandler =
         mock(ConstraintSecurityHandler.class);
@@ -216,18 +195,7 @@ public class JettyAuthenticatorTest {
     jettyAuthenticator.validateRequest(servletRequest, mock(ServletResponse.class), false);
 
     // then
-    final ArgumentCaptor<FilterConfig> argument = ArgumentCaptor.forClass(FilterConfig.class);
-    verify(securityFilter).init(argument.capture());
-    final FilterConfig filterConfigInitArg = argument.getValue();
-    assertThat(filterConfigInitArg.getFilterName(), is(filterNameValue));
-    assertThat(filterConfigInitArg.getServletContext(), is(servletContext));
-    assertThat(filterConfigInitArg.getInitParameter(param1Key), is(param1Value));
-    assertThat(filterConfigInitArg.getInitParameter(param2Key), is(param2Value));
-    assertThat(filterConfigInitArg.getInitParameter("notAnInitPropertyKey"), nullValue());
-    final List<String> initParamNames =
-        Collections.list(filterConfigInitArg.getInitParameterNames());
-    assertThat(initParamNames, hasSize(2));
-    assertThat(initParamNames, containsInAnyOrder(param1Key, param2Key));
+    verify(securityFilter).init();
   }
 
   /**
@@ -241,7 +209,7 @@ public class JettyAuthenticatorTest {
    */
   @Test
   public void testInitializeSecurityFilterWithComplicatedInitParams()
-      throws ServletException, IOException, ServerAuthException {
+      throws IOException, ServerAuthException, AuthenticationException {
     // given
     final ConstraintSecurityHandler constraintSecurityHandler =
         mock(ConstraintSecurityHandler.class);
@@ -272,25 +240,11 @@ public class JettyAuthenticatorTest {
     jettyAuthenticator.validateRequest(servletRequest, mock(ServletResponse.class), false);
 
     // then
-    final ArgumentCaptor<FilterConfig> argument = ArgumentCaptor.forClass(FilterConfig.class);
-    verify(securityFilter).init(argument.capture());
-    final FilterConfig filterConfigInitArg = argument.getValue();
-    assertThat(
-        filterConfigInitArg.getFilterName(), is(securityFilter.getClass().getCanonicalName()));
-    assertThat(filterConfigInitArg.getServletContext(), is(servletContext));
-    assertThat(filterConfigInitArg.getInitParameter(incorrectlyFormattedInitParamKey), nullValue());
-    assertThat(filterConfigInitArg.getInitParameter(initParamKey), is(initParamValue));
-    assertThat(
-        filterConfigInitArg.getInitParameter(servletInitParamKey), is(servletInitParamValue));
-    assertThat(filterConfigInitArg.getInitParameter(anotherServiceProperty), nullValue());
-    final List<String> initParamNames =
-        Collections.list(filterConfigInitArg.getInitParameterNames());
-    assertThat(initParamNames, hasSize(2));
-    assertThat(initParamNames, containsInAnyOrder(initParamKey, servletInitParamKey));
+    verify(securityFilter).init();
   }
 
   @Test
-  public void testRemoveSecurityFilter() throws IOException, ServletException {
+  public void testRemoveSecurityFilter() {
     // given
     final SecurityFilter securityFilter = mock(SecurityFilter.class);
     final MockServiceReference securityFilterServiceReference = new MockServiceReference();
@@ -306,13 +260,13 @@ public class JettyAuthenticatorTest {
   }
 
   @Test
-  public void testRemoveNullSecurityFilter() throws IOException, ServletException {
+  public void testRemoveNullSecurityFilter() {
     jettyAuthenticator.removeSecurityFilter(null);
   }
 
   @Test
   public void testDoFilterWithSecurityFiltersInCorrectOrder()
-      throws IOException, ServletException, InvalidSyntaxException, ServerAuthException {
+      throws IOException, ServerAuthException, AuthenticationException {
     // given
     jettyAuthenticator.setConfiguration(mock(ConstraintSecurityHandler.class));
 
@@ -362,7 +316,7 @@ public class JettyAuthenticatorTest {
   }
 
   private SecurityFilter registerSecurityFilter(Dictionary serviceProperties)
-      throws IOException, ServletException {
+      throws IOException, AuthenticationException {
     final SecurityFilter securityFilter = mock(SecurityFilter.class);
     Mockito.doAnswer(
             invocation -> {

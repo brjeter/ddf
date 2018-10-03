@@ -17,20 +17,7 @@ import java.io.IOException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-/* change bundle name or move into different api bundle (which?)*/
-/**
- * {@link SecurityFilter} is a marker interface that indicates that the {@link Filter}s will be
- * handled by the {@link org.codice.ddf.pax.web.jetty.JettyAuthenticator} instead of injected in
- * servlets directly.
- *
- * <p><b> This code is experimental. While this interface is functional and tested, it may change or
- * be removed in a future version of the library. </b>
- */
-public interface SecurityFilter {
-  void init();
-
-  void doFilter(ServletRequest var1, ServletResponse var2, FilterChain var3)
+public interface FilterChain {
+  void doFilter(ServletRequest var1, ServletResponse var2)
       throws IOException, AuthenticationException;
-
-  void destroy();
 }
