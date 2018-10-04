@@ -16,19 +16,12 @@ package org.codice.ddf.pax.web.jetty;
 import ddf.security.SecurityConstants;
 import ddf.security.Subject;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.Filter;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.apache.commons.collections.CollectionUtils;
@@ -41,7 +34,6 @@ import org.eclipse.jetty.security.IdentityService;
 import org.eclipse.jetty.security.ServerAuthException;
 import org.eclipse.jetty.security.authentication.LoginAuthenticator;
 import org.eclipse.jetty.server.Authentication;
-import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.UserIdentity;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -111,15 +103,7 @@ public class JettyAuthenticator extends LoginAuthenticator {
             bundleContext.getService(securityFilterServiceReference);
 
         if (!hasBeenInitialized(securityFilterServiceReference, bundleContext)) {
-          try {
-            initializeSecurityFilter(
-                bundleContext,
-                securityFilterServiceReference,
-                securityFilter,
-                resolveRequest(servletRequest));
-          } catch (ServletException e) {
-            throw new ServerAuthException("Unable to initialize security filter");
-          }
+          initializeSecurityFilter(bundleContext, securityFilterServiceReference, securityFilter);
         }
         chain.addSecurityFilter(securityFilter);
       }
@@ -135,7 +119,8 @@ public class JettyAuthenticator extends LoginAuthenticator {
         return new Authentication.Failure() {};
       }
     } else {
-      LOGGER.debug("Did not find any SecurityFilters. Acting as a pass-through filter...");
+      LOGGER.debug("Did not find any SecurityFilters. Send auth failure...");
+      return new Authentication.Failure() {};
     }
 
     Subject subject = (Subject) servletRequest.getAttribute(SecurityConstants.SECURITY_SUBJECT);
@@ -144,17 +129,12 @@ public class JettyAuthenticator extends LoginAuthenticator {
   }
 
   @Nullable
-  BundleContext getContext() {
+  protected BundleContext getContext() {
     final Bundle cxfBundle = FrameworkUtil.getBundle(JettyAuthenticator.class);
     if (cxfBundle != null) {
       return cxfBundle.getBundleContext();
     }
     return null;
-  }
-
-  @Nullable
-  protected Request resolveRequest(ServletRequest req) {
-    return (req instanceof Request) ? (Request) req : null;
   }
 
   @Nullable
@@ -178,10 +158,7 @@ public class JettyAuthenticator extends LoginAuthenticator {
   private void initializeSecurityFilter(
       BundleContext bundleContext,
       ServiceReference<SecurityFilter> securityFilterServiceReference,
-      SecurityFilter securityFilter,
-      @Nullable Request request)
-      throws ServletException {
-    final ServletContext servletContext;
+      SecurityFilter securityFilter) {
     final String filterName = getFilterName(securityFilterServiceReference, bundleContext);
 
     securityFilter.init();
@@ -209,8 +186,10 @@ public class JettyAuthenticator extends LoginAuthenticator {
 
   @Override
   public boolean secureResponse(
-      ServletRequest req, ServletResponse res, boolean mandatory, Authentication.User validatedUser)
-      throws ServerAuthException {
+      ServletRequest req,
+      ServletResponse res,
+      boolean mandatory,
+      Authentication.User validatedUser) {
     return true;
   }
 
@@ -254,96 +233,9 @@ public class JettyAuthenticator extends LoginAuthenticator {
     }
   }
 
-  /**
-   * This inner class is used to instantiate a {@link FilterConfig} from a {@link SecurityFilter}'s
-   * service properties containing init params and the same {@link ServletContext} as the {@link
-   * JettyAuthenticator}. The {@link FilterConfig} is used to initialize the {@link SecurityFilter}.
-   *
-   * <p>The logic of this inner class is copied from the {@link
-   * org.ops4j.pax.web.extender.whiteboard} feature.
-   */
-  private static class SecurityFilterInitFilterConfig implements FilterConfig {
-
-    private final ServiceReference<SecurityFilter> securityFilterServiceReference;
-
-    private final ServletContext servletContext;
-
-    private final Map<String, String> initParams;
-
-    private final BundleContext bundleContext;
-
-    SecurityFilterInitFilterConfig(
-        ServiceReference<SecurityFilter> securityFilterServiceReference,
-        ServletContext servletContext,
-        BundleContext bundleContext) {
-      this.securityFilterServiceReference = securityFilterServiceReference;
-      this.servletContext = servletContext;
-      this.bundleContext = bundleContext;
-      initParams = createInitParams();
-    }
-
-    @Override
-    public String getFilterName() {
-      return JettyAuthenticator.getFilterName(securityFilterServiceReference, bundleContext);
-    }
-
-    @Override
-    public ServletContext getServletContext() {
-      return servletContext;
-    }
-
-    @Override
-    public String getInitParameter(String name) {
-      return initParams.get(name);
-    }
-
-    @Override
-    public Enumeration<String> getInitParameterNames() {
-      return Collections.enumeration(initParams.keySet());
-    }
-
-    /**
-     * This code to create the init params from a {@link ServiceReference< Filter >} is copied from
-     * {@link
-     * org.ops4j.pax.web.extender.whiteboard.internal.tracker.ServletTracker#createWebElement(ServiceReference,
-     * javax.servlet.Servlet)}. See the pax-web Whiteboard documentation and {@link
-     * org.ops4j.pax.web.extender.whiteboard.ExtenderConstants#PROPERTY_INIT_PREFIX} for how to
-     * configure {@link Filter} services with init params.
-     */
-    private Map<String, String> createInitParams() {
-      String[] initParamKeys = securityFilterServiceReference.getPropertyKeys();
-      final String PROPERTY_INIT_PREFIX = "init-prefix";
-      String initPrefixProp =
-          getStringProperty(securityFilterServiceReference, PROPERTY_INIT_PREFIX);
-      if (initPrefixProp == null) {
-        final String DEFAULT_INIT_PREFIX_PROP = "init.";
-        initPrefixProp = DEFAULT_INIT_PREFIX_PROP;
-      }
-
-      // make all the service parameters available as initParams
-      Map<String, String> initParameters = new HashMap<>();
-      for (String key : initParamKeys) {
-        String value =
-            securityFilterServiceReference.getProperty(key) == null
-                ? ""
-                : securityFilterServiceReference.getProperty(key).toString();
-
-        final String HTTP_WHITEBOARD_SERVLET_INIT_PARAM_PREFIX = "servlet.init.";
-        if (key.startsWith(initPrefixProp)) {
-          initParameters.put(key.replaceFirst(initPrefixProp, ""), value);
-        } else if (key.startsWith(HTTP_WHITEBOARD_SERVLET_INIT_PARAM_PREFIX)) {
-          initParameters.put(
-              key.replaceFirst(HTTP_WHITEBOARD_SERVLET_INIT_PARAM_PREFIX, ""), value);
-        }
-      }
-
-      return initParameters;
-    }
-  }
-
   private class DummyLoginService implements org.eclipse.jetty.security.LoginService {
 
-    final JettyIdentityService jettyIdentityService = new JettyIdentityService();
+    private final JettyIdentityService jettyIdentityService = new JettyIdentityService();
 
     @Override
     public String getName() {
@@ -366,9 +258,13 @@ public class JettyAuthenticator extends LoginAuthenticator {
     }
 
     @Override
-    public void setIdentityService(IdentityService service) {}
+    public void setIdentityService(IdentityService service) {
+      // not needed
+    }
 
     @Override
-    public void logout(UserIdentity user) {}
+    public void logout(UserIdentity user) {
+      // not needed
+    }
   }
 }

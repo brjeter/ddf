@@ -395,10 +395,14 @@ public class LoginFilterTest {
     }
 
     @Override
-    public void login(String s, String s1) {}
+    public void login(String s, String s1) {
+      // not needed
+    }
 
     @Override
-    public void logout() {}
+    public void logout() {
+      // not needed
+    }
 
     @Override
     public Collection<Part> getParts() throws IOException {

@@ -30,7 +30,9 @@ public class SecurityJavaSubjectFilter implements Filter {
       LoggerFactory.getLogger(SecurityJavaSubjectFilter.class);
 
   @Override
-  public void init(FilterConfig filterConfig) throws ServletException {}
+  public void init(FilterConfig filterConfig) throws ServletException {
+    LOGGER.debug("Starting SecurityJavaSubjectFilter...");
+  }
 
   @Override
   public void doFilter(
@@ -61,5 +63,7 @@ public class SecurityJavaSubjectFilter implements Filter {
   }
 
   @Override
-  public void destroy() {}
+  public void destroy() {
+    // not needed
+  }
 }

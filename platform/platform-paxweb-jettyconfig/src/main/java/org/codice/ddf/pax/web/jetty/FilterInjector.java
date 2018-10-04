@@ -71,7 +71,7 @@ public class FilterInjector implements EventListenerHook {
   }
 
   @Nullable
-  BundleContext getContext() {
+  protected BundleContext getContext() {
     final Bundle cxfBundle = FrameworkUtil.getBundle(SecurityJavaSubjectFilter.class);
     if (cxfBundle != null) {
       return cxfBundle.getBundleContext();

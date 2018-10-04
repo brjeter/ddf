@@ -74,10 +74,12 @@ public class JettyAuthenticatorTest {
 
   @Test
   public void testSetConfiguration() {
+    // given
     final ConstraintSecurityHandler constraintSecurityHandler =
         mock(ConstraintSecurityHandler.class);
-
+    // when
     jettyAuthenticator.setConfiguration(constraintSecurityHandler);
+    // then
     verify(constraintSecurityHandler).setLoginService(jettyAuthenticator.getLoginService());
     verify(constraintSecurityHandler)
         .setIdentityService(jettyAuthenticator.getLoginService().getIdentityService());
@@ -87,8 +89,6 @@ public class JettyAuthenticatorTest {
   public void testDoFilterWithSecurityFilter()
       throws IOException, ServerAuthException, AuthenticationException {
     // given
-    jettyAuthenticator.setConfiguration(mock(ConstraintSecurityHandler.class));
-
     final SecurityFilter securityFilter = registerSecurityFilter(new Hashtable());
     final ServletRequest servletRequest = mock(ServletRequest.class);
     final ServletResponse servletResponse = mock(ServletResponse.class);
@@ -113,9 +113,7 @@ public class JettyAuthenticatorTest {
       throws IOException, ServerAuthException, AuthenticationException {
     // given
     jettyAuthenticator.setConfiguration(null);
-
     final SecurityFilter securityFilter = registerSecurityFilter(new Hashtable());
-
     final ServletRequest servletRequest = mock(ServletRequest.class);
     final ServletResponse servletResponse = mock(ServletResponse.class);
 
@@ -124,7 +122,6 @@ public class JettyAuthenticatorTest {
 
     // then
     final InOrder inOrder = Mockito.inOrder(securityFilter);
-
     inOrder.verify(securityFilter).init();
     inOrder
         .verify(securityFilter)
@@ -134,35 +131,28 @@ public class JettyAuthenticatorTest {
   @Test
   public void testSecurityFiltersOnlyInitializedOnce()
       throws IOException, ServerAuthException, AuthenticationException {
-    // given
-    jettyAuthenticator.setConfiguration(mock(ConstraintSecurityHandler.class));
-
+    // given / when
     final Dictionary dictionary1 = new Hashtable();
     dictionary1.put("osgi.http.whiteboard.filter.name", "filter1");
     final SecurityFilter securityFilter1 = registerSecurityFilter(dictionary1);
-
     jettyAuthenticator.validateRequest(
         mock(ServletRequest.class), mock(ServletResponse.class), false);
-
     final Dictionary dictionary2 = new Hashtable();
     dictionary2.put("osgi.http.whiteboard.filter.name", "filter2");
     final SecurityFilter securityFilter2 = registerSecurityFilter(dictionary2);
-
     jettyAuthenticator.validateRequest(
         mock(ServletRequest.class), mock(ServletResponse.class), false);
     jettyAuthenticator.validateRequest(
         mock(ServletRequest.class), mock(ServletResponse.class), false);
     jettyAuthenticator.validateRequest(
         mock(ServletRequest.class), mock(ServletResponse.class), false);
-
     final Dictionary dictionary3 = new Hashtable();
     dictionary3.put("osgi.http.whiteboard.filter.name", "filter3");
     final SecurityFilter securityFilter3 = registerSecurityFilter(dictionary3);
-
     jettyAuthenticator.validateRequest(
         mock(ServletRequest.class), mock(ServletResponse.class), false);
 
-    // when
+    // then
     verify(securityFilter1).init();
     verify(securityFilter2).init();
     verify(securityFilter3).init();
@@ -172,12 +162,9 @@ public class JettyAuthenticatorTest {
   public void testInitializeSecurityFilter()
       throws IOException, ServerAuthException, AuthenticationException {
     // given
-    final ConstraintSecurityHandler constraintSecurityHandler =
-        mock(ConstraintSecurityHandler.class);
     final HttpSession httpSession = mock(HttpSession.class);
     final Request servletRequest = mock(Request.class);
     final ServletContext servletContext = mock(ServletContext.class);
-    jettyAuthenticator.setConfiguration(constraintSecurityHandler);
     final Dictionary dictionary = new Hashtable();
     final String filterNameValue = "my-test-filter";
     dictionary.put("osgi.http.whiteboard.filter.name", filterNameValue);
@@ -211,8 +198,6 @@ public class JettyAuthenticatorTest {
   public void testInitializeSecurityFilterWithComplicatedInitParams()
       throws IOException, ServerAuthException, AuthenticationException {
     // given
-    final ConstraintSecurityHandler constraintSecurityHandler =
-        mock(ConstraintSecurityHandler.class);
     final HttpSession httpSession = mock(HttpSession.class);
     final Request servletRequest = mock(Request.class);
     final ServletContext servletContext = mock(ServletContext.class);
@@ -268,26 +253,19 @@ public class JettyAuthenticatorTest {
   public void testDoFilterWithSecurityFiltersInCorrectOrder()
       throws IOException, ServerAuthException, AuthenticationException {
     // given
-    jettyAuthenticator.setConfiguration(mock(ConstraintSecurityHandler.class));
-
     final Dictionary dictionary0 = new Hashtable();
     dictionary0.put(Constants.SERVICE_RANKING, 0);
     final SecurityFilter securityFilter0 = registerSecurityFilter(dictionary0);
-
     final Dictionary dictionary100 = new Hashtable();
     dictionary100.put(Constants.SERVICE_RANKING, 100);
     final SecurityFilter securityFilter100 = registerSecurityFilter(dictionary100);
-
     final Dictionary dictionary1 = new Hashtable();
     dictionary1.put(Constants.SERVICE_RANKING, 1);
     final SecurityFilter securityFilter1 = registerSecurityFilter(dictionary1);
-
     final SecurityFilter securityFilter = registerSecurityFilter(new Hashtable());
-
     final Dictionary dictionary99 = new Hashtable();
     dictionary99.put(Constants.SERVICE_RANKING, 99);
     final SecurityFilter securityFilter99 = registerSecurityFilter(dictionary99);
-
     final ServletRequest servletRequest = mock(ServletRequest.class);
     final ServletResponse servletResponse = mock(ServletResponse.class);
 

@@ -50,7 +50,7 @@ public class SecurityJavaSubjectFilterTest {
     ServletRequest servletRequest = mock(ServletRequest.class);
     ServletResponse servletResponse = mock(ServletResponse.class);
     FilterChain filterChain = mock(FilterChain.class);
-    javax.security.auth.Subject subject = new Subject();
+    Subject subject = new Subject();
     SecurityJavaSubjectFilter securityJavaSubjectFilter = new SecurityJavaSubjectFilter();
     // when
     when(servletRequest.getAttribute(SecurityConstants.SECURITY_JAVA_SUBJECT)).thenReturn(subject);

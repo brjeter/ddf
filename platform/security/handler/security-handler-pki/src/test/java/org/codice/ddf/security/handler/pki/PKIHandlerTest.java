@@ -43,8 +43,7 @@ public class PKIHandlerTest {
    * given a valid HTTPServletRequest.
    */
   @Test
-  public void testGetNormalizedTokenSuccessNoCrlPki()
-      throws java.security.cert.CertificateException {
+  public void testGetNormalizedTokenSuccessNoCrlPki() throws CertificateException {
     PKIHandler handler = getPKIHandlerWithMockedCrl("signature.properties", true);
 
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -70,7 +69,7 @@ public class PKIHandlerTest {
    */
   @Test
   public void testGetNormalizedTokenSuccessNoCrlPkiNoResolveNoResponse()
-      throws java.security.cert.CertificateException {
+      throws CertificateException {
     PKIHandler handler = getPKIHandlerWithMockedCrl("signature.properties", true);
 
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -136,7 +135,7 @@ public class PKIHandlerTest {
    * @throws java.security.cert.CertificateException
    */
   @Test
-  public void testNoActionWhenHttpResponseIsNull() throws java.security.cert.CertificateException {
+  public void testNoActionWhenHttpResponseIsNull() throws CertificateException {
 
     PKIHandler handler = getPKIHandlerWithMockedCrl("signature.properties", true);
 

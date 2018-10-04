@@ -40,5 +40,7 @@ public class JettyAuthenticatedUser implements Authentication.User {
   }
 
   @Override
-  public void logout() {}
+  public void logout() {
+    // not used
+  }
 }

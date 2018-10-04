@@ -46,7 +46,9 @@ public class JettyIdentityService implements IdentityService {
   }
 
   @Override
-  public void unsetRunAs(Object token) {}
+  public void unsetRunAs(Object token) {
+    // not needed
+  }
 
   @Override
   public UserIdentity newUserIdentity(
