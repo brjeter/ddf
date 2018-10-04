@@ -17,7 +17,6 @@ import java.io.IOException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-/* change bundle name or move into different api bundle (which?)*/
 /**
  * {@link SecurityFilter} is a marker interface that indicates that the {@link Filter}s will be
  * handled by the {@link org.codice.ddf.pax.web.jetty.JettyAuthenticator} instead of injected in

@@ -33,6 +33,7 @@
              description="Security Core">
         <bundle start-level="30">mvn:org.apache.neethi/neethi/${wss4j.neethi.version}</bundle>
         <feature>cxf-rt-security</feature>
+        <feature>security-filter-api</feature>
         <feature>cxf-jaxrs</feature>
         <bundle>mvn:org.apache.shiro/shiro-core/${apache.shiro.version}</bundle>
         <feature>common-system</feature>
@@ -559,16 +560,16 @@
         <feature>security-handler-saml</feature>
         <feature>session-invalidator</feature>
         <feature>platform-paxweb-jettyconfig</feature>
-        <bundle>mvn:ddf.security.idp/security-idp-client/${project.version}</bundle>
+        <feature>security-filter-login</feature>
         <feature>guava</feature>
-        <bundle>mvn:ddf.security.encryption/security-encryption-api/${project.version}</bundle>
-        <bundle>mvn:ddf.security.expansion/security-expansion-api/${project.version}</bundle>
         <feature>cxf-frontend-javascript</feature>
         <feature>cxf-jaxrs</feature>
         <feature>util-uuidgenerator</feature>
         <feature>security-handler-basic</feature>
-        <feature>security-filter-login</feature>
         <feature>security-idp-plugin</feature>
+        <bundle>mvn:ddf.security.idp/security-idp-client/${project.version}</bundle>
+        <bundle>mvn:ddf.security.encryption/security-encryption-api/${project.version}</bundle>
+        <bundle>mvn:ddf.security.expansion/security-expansion-api/${project.version}</bundle>
         <bundle>mvn:ddf.security.idp/security-idp-server/${project.version}</bundle>
         <bundle>mvn:io.fastjson/boon/${boon.version}</bundle>
     </feature>
