@@ -47,10 +47,18 @@
 
     <!-- A list of bundle URI replacements that allows changing external feature definitions -->
     <bundleReplacements>
-        <bundle originalUri="mvn:org.ops4j.pax.web/pax-web-jetty/7.2.3"
-                replacement="mvn:ddf.platform/pax-web-jetty/${project.version}"
+        <bundle originalUri="mvn:org.ops4j.pax.web/pax-web-api/7.2.3"
+                replacement="mvn:org.ops4j.pax.web/pax-web-api/7.2.4.CODICE"
                 mode="maven"/>
-
+        <bundle originalUri="mvn:org.ops4j.pax.web/pax-web-jetty/7.2.3"
+                replacement="mvn:org.ops4j.pax.web/pax-web-jetty/7.2.4.CODICE"
+                mode="maven"/>
+        <bundle originalUri="mvn:org.ops4j.pax.web/pax-web-runtime/7.2.3"
+                replacement="mvn:org.ops4j.pax.web/pax-web-runtime/7.2.4.CODICE"
+                mode="maven"/>
+        <bundle originalUri="mvn:org.ops4j.pax.web/pax-web-spi/7.2.3"
+                replacement="mvn:org.ops4j.pax.web/pax-web-spi/7.2.4.CODICE"
+                mode="maven"/>
     </bundleReplacements>
 
     <!-- A list of feature replacements that allows changing external feature definitions -->

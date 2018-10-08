@@ -384,6 +384,5 @@
         <module>osgi</module>
         <module>branding-registry-impl</module>
         <module>sync-installer</module>
-        <module>pax-web-jetty</module>
     </modules>
 </project>

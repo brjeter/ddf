@@ -422,9 +422,24 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>ddf.platform</groupId>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-api</artifactId>
+            <version>7.2.4.CODICE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
             <artifactId>pax-web-jetty</artifactId>
-            <version>${project.version}</version>
+            <version>7.2.4.CODICE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-runtime</artifactId>
+            <version>7.2.4.CODICE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-spi</artifactId>
+            <version>7.2.4.CODICE</version>
         </dependency>
 
 
