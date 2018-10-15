@@ -142,6 +142,36 @@ public final class PropertiesLoader {
     return properties;
   }
 
+  /**
+   * Will attempt to load properties from a file using the given classloader without replacing the
+   * system properties with their value. If that fails, several other methods will be tried until
+   * the properties file is located.
+   *
+   * <p>Note that loading the properties directly from the file system will replace the system
+   * properties with their corresponding values so if that method is used to load the properties,
+   * the system properties will be substituted.
+   *
+   * @param propertiesFile the resource name or the file path of the properties file
+   * @param classLoader the class loader with access to the properties file
+   * @return Properties deserialized from the specified file, or empty if the load failed
+   */
+  public Properties loadPropertiesWithoutSystemPropertySubstitution(
+      String propertiesFile, ClassLoader classLoader) {
+    Properties properties = new Properties();
+    if (propertiesFile == null) {
+      LOGGER.debug("Properties file must not be null.");
+      return properties;
+    }
+
+    Iterator<BiFunction<String, ClassLoader, Properties>> strategiesIterator =
+        PROPERTY_LOADING_STRATEGIES.iterator();
+    do {
+      properties = strategiesIterator.next().apply(propertiesFile, classLoader);
+    } while (properties.isEmpty() && strategiesIterator.hasNext());
+
+    return properties;
+  }
+
   /** Default property loading strategy. */
   @SuppressWarnings("squid:S1172" /* Used in bi-function */)
   @VisibleForTesting
@@ -186,6 +216,9 @@ public final class PropertiesLoader {
    * loaded directly, using this method. Otherwise the path will be considered relative and attempts
    * will be made with {@code karaf.home} and {@code ddf.home} property values prepended to the
    * original path.
+   *
+   * <p>Note that loading the properties directly from the file system will replace the system
+   * properties with their corresponding values.
    */
   @SuppressWarnings("squid:S1172" /* Used in bi-function */)
   @VisibleForTesting

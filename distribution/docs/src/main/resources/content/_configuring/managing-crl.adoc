@@ -63,6 +63,22 @@ If no certificate is provided, the guest handler will grant guest access.
 This also enables CRL revocation for the STS endpoint.
 The STS CRL Interceptor monitors the same `encryption.properties` file and operates in an identical manner to the PKI Authenication's CRL handler. Enabling the CRL via the `encryption.properties` file will also enable it for the STS, and also requires a restart.
 
+If the CRL cannot be placed in ${home_directory}/etc/keystores but can be accessed via an *HTTPS* URL:
+
+. Navigate to the ${admin-console}.
+. Navigate to *System -> Configuration -> Certificate Revocation List (CRL)*
+. Add the *HTTPS* URL under *CRL URL address*
+. Check the *Enable CRL via URL* option
+
+A local CRL file will be created and the `encryption.properties` and `signature.properties` files will be set as mentioned above.
+
+[WARNING]
+====
+Verify that the values in the `encryption.properties` and `signature.properties` are still using system properties from the `custom.system.properties` file.
+For instance, unless it was changed manually, the value for `org.apache.ws.security.crypto.merlin.keystore.file` should be `${javax.net.ssl.keyStore}` instead of the actual keystore file path.
+If the files are not using system properties make sure they are protected the same way as the `custom.system.properties` file.
+====
+
 ==== Add Revocation to a Web Context
 
 The PKIHandler implements CRL revocation, so any web context that is configured to use PKI authentication will also use CRL revocation if revocation is enabled.
