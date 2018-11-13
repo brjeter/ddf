@@ -36,7 +36,23 @@ public abstract class ExportMigrationPropertyReferencedEntryImpl extends ExportM
    */
   ExportMigrationPropertyReferencedEntryImpl(
       ExportMigrationContextImpl context, String property, String pathname) {
-    super(context, pathname);
+    this(context, property, pathname, "");
+  }
+
+  /**
+   * Instantiates a new property referenced migration entry given a migratable context, property
+   * name and pathname.
+   *
+   * @param context the migration context associated with this entry
+   * @param property the property name for this entry
+   * @param pathname the pathname for this entry
+   * @param nameSuffix a String to concatenate to the end of the entry name
+   * @throws IllegalArgumentException if <code>context</code>, <code>property</code>, or <code>
+   * pathname</code> is <code>null</code>
+   */
+  ExportMigrationPropertyReferencedEntryImpl(
+      ExportMigrationContextImpl context, String property, String pathname, String nameSuffix) {
+    super(context, pathname, nameSuffix);
     Validate.notNull(property, "invalid null property");
     this.property = property;
   }

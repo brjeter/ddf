@@ -1214,7 +1214,8 @@ public class ExportMigrationEntryImplTest extends AbstractMigrationSupport {
     final ExportMigrationEntry entry = oentry.get();
 
     Assert.assertThat(entry.getId(), Matchers.equalTo(MIGRATABLE_ID));
-    Assert.assertThat(entry.getName(), Matchers.equalTo(MIGRATABLE_NAME));
+    Assert.assertThat(
+        entry.getName(), Matchers.equalTo(String.format("%s:%s", MIGRATABLE_NAME, UNIX_NAME)));
     Assert.assertThat(entry.getPath(), Matchers.equalTo(MIGRATABLE_PATH));
     // now check that it is a java property referenced entry that references the proper property
     // name
@@ -1243,7 +1244,8 @@ public class ExportMigrationEntryImplTest extends AbstractMigrationSupport {
     final ExportMigrationEntry entry = oentry.get();
 
     Assert.assertThat(entry.getId(), Matchers.equalTo(MIGRATABLE_ID));
-    Assert.assertThat(entry.getName(), Matchers.equalTo(MIGRATABLE_NAME));
+    Assert.assertThat(
+        entry.getName(), Matchers.equalTo(String.format("%s:%s", MIGRATABLE_NAME, UNIX_NAME)));
     Assert.assertThat(entry.getPath(), Matchers.equalTo(MIGRATABLE_PATH));
     // now check that it is a java property referenced entry that references the proper property
     // name
@@ -1262,7 +1264,10 @@ public class ExportMigrationEntryImplTest extends AbstractMigrationSupport {
   public void testGetPropertyReferencedEntryWhenValueIsAbsoluteNotUnderDDFHome() throws Exception {
     final Path migratablePath =
         testFolder.newFile("test.cfg").toPath().toRealPath(LinkOption.NOFOLLOW_LINKS);
-    final String migratableName = FilenameUtils.separatorsToUnix(migratablePath.toString());
+    final String migratableName =
+        FilenameUtils.separatorsToUnix(migratablePath.toString())
+            + ":"
+            + FilenameUtils.separatorsToUnix(entry.getPath().toString());
 
     storeProperty(PROPERTY_NAME, migratablePath.toAbsolutePath().toString());
 

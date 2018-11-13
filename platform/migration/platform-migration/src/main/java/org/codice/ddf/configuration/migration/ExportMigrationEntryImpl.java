@@ -90,10 +90,12 @@ public class ExportMigrationEntryImpl extends MigrationEntryImpl implements Expo
    *
    * @param context the migration context associated with this entry
    * @param path the path for this entry
+   * @param nameSuffix a String to concatenate to the end of the entry name
    * @throws IllegalArgumentException if <code>context</code> or <code>path</code> is <code>null
    * </code>
    */
-  protected ExportMigrationEntryImpl(ExportMigrationContextImpl context, Path path) {
+  protected ExportMigrationEntryImpl(
+      ExportMigrationContextImpl context, Path path, String nameSuffix) {
     Validate.notNull(context, "invalid null context");
     Validate.notNull(path, "invalid null path");
     Path apath;
@@ -128,7 +130,22 @@ public class ExportMigrationEntryImpl extends MigrationEntryImpl implements Expo
     this.path = context.getPathUtils().relativizeFromDDFHome(apath);
     this.file = apath.toFile();
     // we keep the entry name in Unix style based on our convention
-    this.name = FilenameUtils.separatorsToUnix(this.path.toString());
+    this.name = FilenameUtils.separatorsToUnix(this.path.toString()) + nameSuffix;
+  }
+
+  /**
+   * Instantiates a new migration entry given a migratable context and path.
+   *
+   * <p><i>Note:</i> In this version of the constructor, the path is either absolute or assumed to
+   * be relative to ${ddf.home}. It will also be automatically relativized to ${ddf.home}.
+   *
+   * @param context the migration context associated with this entry
+   * @param path the path for this entry
+   * @throws IllegalArgumentException if <code>context</code> or <code>path</code> is <code>null
+   * </code>
+   */
+  protected ExportMigrationEntryImpl(ExportMigrationContextImpl context, Path path) {
+    this(context, path, "");
   }
 
   /**
@@ -146,6 +163,26 @@ public class ExportMigrationEntryImpl extends MigrationEntryImpl implements Expo
     this(
         context,
         Paths.get(ExportMigrationEntryImpl.validateNotNull(pathname, "invalid null pathname")));
+  }
+
+  /**
+   * Instantiates a new migration entry given a migratable context and path.
+   *
+   * <p><i>Note:</i> In this version of the constructor, the path is either absolute or assumed to
+   * be relative to ${ddf.home}. It will also be automatically relativized to ${ddf.home}.
+   *
+   * @param context the migration context associated with this entry
+   * @param pathname the path string for this entry
+   * @param nameSuffix a String to concatenate to the end of the entry name
+   * @throws IllegalArgumentException if <code>context</code> or <code>pathname</code> is <code>null
+   * </code>
+   */
+  protected ExportMigrationEntryImpl(
+      ExportMigrationContextImpl context, String pathname, String nameSuffix) {
+    this(
+        context,
+        Paths.get(ExportMigrationEntryImpl.validateNotNull(pathname, "invalid null pathname")),
+        nameSuffix);
   }
 
   private static <T> T validateNotNull(T t, String msg) {
@@ -289,7 +326,8 @@ public class ExportMigrationEntryImpl extends MigrationEntryImpl implements Expo
         return Optional.empty();
       }
       final ExportMigrationJavaPropertyReferencedEntryImpl prop =
-          new ExportMigrationJavaPropertyReferencedEntryImpl(context, path, pname, val);
+          new ExportMigrationJavaPropertyReferencedEntryImpl(
+              context, path, pname, val, ":" + FilenameUtils.separatorsToUnix(path.toString()));
 
       properties.put(pname, prop);
       return Optional.of(prop);
