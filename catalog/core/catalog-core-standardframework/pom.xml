@@ -26,7 +26,7 @@
     <packaging>bundle</packaging>
 
     <properties>
-        <!-- For maven-surefire-plugin -->
+        <!--For maven-surefire-plugin-->
         <surefire.argline.append>-javaagent:${powermock.agent}</surefire.argline.append>
     </properties>
 
@@ -343,7 +343,7 @@
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
+            <artifactId>powermock-api-mockito2</artifactId>
             <scope>test</scope>
             <exclusions>
                 <exclusion>

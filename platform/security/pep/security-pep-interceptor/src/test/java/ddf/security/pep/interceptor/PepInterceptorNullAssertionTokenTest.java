@@ -53,6 +53,6 @@ public class PepInterceptorNullAssertionTokenTest {
     expectedExForNullMessage.expectMessage("Unauthorized");
     interceptor.handleMessage(messageWithNullSecurityAssertion);
 
-    PowerMockito.verifyStatic();
+    PowerMockito.verifyStatic(SecurityLogger.class);
   }
 }

@@ -85,21 +85,20 @@ public class PepInterceptorActionsTest {
     when(mockBOI.getExtensor(SoapOperationInfo.class)).thenReturn(null);
 
     doAnswer(
-            new Answer<Boolean>() {
-              @Override
-              public Boolean answer(InvocationOnMock invocation) throws Throwable {
-                CollectionPermission perm = (CollectionPermission) invocation.getArguments()[0];
-                assertEquals("urn:catalog:query:query-port:searchRequest", perm.getAction());
-                return true;
-              }
-            })
+            (Answer<Boolean>)
+                invocation -> {
+                  CollectionPermission perm = (CollectionPermission) invocation.getArguments()[0];
+                  assertEquals("urn:catalog:query:query-port:searchRequest", perm.getAction());
+                  return true;
+                })
         .when(mockSubject)
         .isPermitted(isA(CollectionPermission.class));
 
     // This should work.
     interceptor.handleMessage(messageWithAction);
 
-    PowerMockito.verifyStatic();
+    PowerMockito.verifyStatic(SecurityAssertionStore.class);
+    SecurityAssertionStore.getSecurityAssertion(messageWithAction);
   }
 
   @Test
@@ -151,7 +150,8 @@ public class PepInterceptorActionsTest {
     // This should work.
     interceptor.handleMessage(messageWithAction);
 
-    PowerMockito.verifyStatic();
+    PowerMockito.verifyStatic(SecurityAssertionStore.class);
+    SecurityAssertionStore.getSecurityAssertion(messageWithAction);
   }
 
   @Test
@@ -198,7 +198,8 @@ public class PepInterceptorActionsTest {
     // This should work.
     interceptor.handleMessage(messageWithAction);
 
-    PowerMockito.verifyStatic();
+    PowerMockito.verifyStatic(SecurityAssertionStore.class);
+    SecurityAssertionStore.getSecurityAssertion(messageWithAction);
   }
 
   @Test
@@ -247,7 +248,8 @@ public class PepInterceptorActionsTest {
     // This should work.
     interceptor.handleMessage(messageWithAction);
 
-    PowerMockito.verifyStatic();
+    PowerMockito.verifyStatic(SecurityAssertionStore.class);
+    SecurityAssertionStore.getSecurityAssertion(messageWithAction);
   }
 
   @Test(expected = AccessDeniedException.class)
@@ -284,6 +286,7 @@ public class PepInterceptorActionsTest {
     // This should throw an exception.
     interceptor.handleMessage(messageWithoutAction);
 
-    PowerMockito.verifyStatic();
+    PowerMockito.verifyStatic(SecurityAssertionStore.class);
+    SecurityAssertionStore.getSecurityAssertion(messageWithoutAction);
   }
 }

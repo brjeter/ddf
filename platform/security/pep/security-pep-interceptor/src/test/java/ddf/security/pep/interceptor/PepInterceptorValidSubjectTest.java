@@ -81,6 +81,7 @@ public class PepInterceptorValidSubjectTest {
     // This should work.
     interceptor.handleMessage(messageWithValidSecurityAssertion);
 
-    PowerMockito.verifyStatic();
+    PowerMockito.verifyStatic(SecurityAssertionStore.class);
+    SecurityAssertionStore.getSecurityAssertion(messageWithValidSecurityAssertion);
   }
 }

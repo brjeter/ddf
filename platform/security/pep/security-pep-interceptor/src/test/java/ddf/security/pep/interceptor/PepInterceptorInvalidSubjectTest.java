@@ -89,6 +89,6 @@ public class PepInterceptorInvalidSubjectTest {
     // This should throw
     interceptor.handleMessage(messageWithInvalidSecurityAssertion);
 
-    PowerMockito.verifyStatic();
+    PowerMockito.verifyStatic(SecurityLogger.class);
   }
 }
