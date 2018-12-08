@@ -64,7 +64,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 
-@PrepareForTest({ReliableResourceDownloader.class, DownloadsStatusEventPublisher.class})
+@PrepareForTest({ReliableResourceDownloader.class})
 public class ReliableResourceDownloaderTest {
   private static final String DOWNLOAD_ID = "123";
 
