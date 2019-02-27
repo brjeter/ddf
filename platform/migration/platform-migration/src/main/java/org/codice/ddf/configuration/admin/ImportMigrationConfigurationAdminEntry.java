@@ -104,6 +104,10 @@ public class ImportMigrationConfigurationAdminEntry {
             cfg.getPid(),
             entry.getPath());
       }
+      if (null != cfg.getProperties()
+          && null != cfg.getProperties().get("felix.fileinstall.filename")) {
+        properties.remove("felix.fileinstall.filename");
+      }
       try {
         cfg.update(properties);
         this.restored = true;

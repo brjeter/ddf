@@ -115,13 +115,13 @@ public class ImportMigrationManagerImpl implements Closeable {
           .forEach(me -> me.getContext().addEntry(me));
       metadata = retrieveMetadata(); // do this after retreiving all exported entries
       this.version = JsonUtils.getStringFrom(metadata, MigrationContextImpl.METADATA_VERSION, true);
-      if (!MigrationContextImpl.CURRENT_VERSION.equals(version)) {
-        IOUtils.closeQuietly(zip);
-        throw new MigrationException(
-            Messages.IMPORT_UNSUPPORTED_VERSION_ERROR,
-            version,
-            MigrationContextImpl.CURRENT_VERSION);
-      }
+      //      if (!MigrationContextImpl.CURRENT_VERSION.equals(version)) {
+      //        IOUtils.closeQuietly(zip);
+      //        throw new MigrationException(
+      //            Messages.IMPORT_UNSUPPORTED_VERSION_ERROR,
+      //            version,
+      //            MigrationContextImpl.CURRENT_VERSION);
+      //      }
       this.productBranding =
           JsonUtils.getStringFrom(metadata, MigrationContextImpl.METADATA_PRODUCT_BRANDING, true);
       this.productVersion =
@@ -155,12 +155,12 @@ public class ImportMigrationManagerImpl implements Closeable {
       throw new MigrationException(
           Messages.IMPORT_MISMATCH_PRODUCT_ERROR, this.productBranding, currentProductBranding);
     }
-    if (!currentProductVersion.equals(this.productVersion)) {
-      throw new MigrationException(
-          Messages.IMPORT_MISMATCH_PRODUCT_VERSION_ERROR,
-          this.productVersion,
-          currentProductVersion);
-    }
+    //    if (!currentProductVersion.equals(this.productVersion)) {
+    //      throw new MigrationException(
+    //          Messages.IMPORT_MISMATCH_PRODUCT_VERSION_ERROR,
+    //          this.productVersion,
+    //          currentProductVersion);
+    //    }
     LOGGER.debug(
         "Importing {} product [{}] from version [{}]...",
         currentProductBranding,
