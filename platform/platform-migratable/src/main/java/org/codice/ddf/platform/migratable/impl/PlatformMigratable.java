@@ -50,25 +50,24 @@ public class PlatformMigratable implements Migratable {
   private static final List<Path> REQUIRED_SYSTEM_PATHS =
       ImmutableList.of( //
           Paths.get("etc", "ws-security"),
-          Paths.get("etc", "system.properties"),
-          Paths.get("etc", "custom.system.properties"),
-          Paths.get("etc", "startup.properties"),
-          Paths.get("etc", "custom.properties"),
-          Paths.get("etc", "config.properties"));
+          //          Paths.get("etc", "system.properties"),
+          Paths.get("etc", "custom.system.properties"));
+  //          Paths.get("etc", "startup.properties"),
+  //          Paths.get("etc", "custom.properties"),
+  //          Paths.get("etc", "config.properties"));
 
   private static final List<Path> OPTIONAL_SYSTEM_PATHS =
       ImmutableList.of( //
-          Paths.get("etc", "users.properties"),
-          Paths.get("etc", "users.attributes"),
-          Paths.get("etc", "pdp", "ddf-metacard-attribute-ruleset.cfg"),
-          Paths.get("etc", "pdp", "ddf-user-attribute-ruleset.cfg"),
-          Paths.get("etc", "org.codice.ddf.admin.applicationlist.properties"),
-          Paths.get("etc", "fipsToIso.properties"),
-          Paths.get("etc", "log4j2.config.xml"),
-          Paths.get("etc", "certs", "meta"),
-          Paths.get("etc", "certs", "1"),
-          Paths.get("bin", "karaf"),
-          Paths.get("bin", "karaf.bat"));
+          Paths.get("etc", "users.properties"), Paths.get("etc", "users.attributes"));
+  //          Paths.get("etc", "pdp", "ddf-metacard-attribute-ruleset.cfg"),
+  //          Paths.get("etc", "pdp", "ddf-user-attribute-ruleset.cfg"),
+  //          Paths.get("etc", "org.codice.ddf.admin.applicationlist.properties"),
+  //          Paths.get("etc", "fipsToIso.properties"),
+  //          Paths.get("etc", "log4j2.config.xml"),
+  //          Paths.get("etc", "certs", "meta"),
+  //          Paths.get("etc", "certs", "1"),
+  //          Paths.get("bin", "karaf"),
+  //          Paths.get("bin", "karaf.bat"));
 
   private static final PathMatcher SERVICE_WRAPPER_CONF_FILTER =
       FileSystems.getDefault().getPathMatcher("glob:**/*-wrapper.conf");

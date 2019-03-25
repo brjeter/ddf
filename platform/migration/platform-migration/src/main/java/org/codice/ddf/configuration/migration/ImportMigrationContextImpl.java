@@ -163,13 +163,13 @@ public class ImportMigrationContextImpl extends MigrationContextImpl<MigrationRe
   @SuppressWarnings(
       "PMD.DefaultPackage" /* designed to be called from ImportMigrationManagerImpl within this package */)
   void doImport() {
+    if (skip) {
+      LOGGER.debug("Skipping optional migratable [{}]", id);
+      return;
+    }
     if (migratable != null) {
       final String version = getVersion().orElse(null);
 
-      if (skip) {
-        LOGGER.debug("Skipping optional migratable [{}] with version [{}]", id, version);
-        return;
-      }
       LOGGER.debug("Importing migratable [{}] from version [{}]...", id, version);
       Stopwatch stopwatch = null;
 

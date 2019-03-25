@@ -32,15 +32,15 @@
     <reference id="configurationAdmin" interface="org.osgi.service.cm.ConfigurationAdmin"/>
     <reference id="system" interface="org.apache.karaf.system.SystemService"/>
 
-    <bean id="configurationAdminMigratable"
-            class="org.codice.ddf.configuration.admin.ConfigurationAdminMigratable">
-        <argument ref="configurationAdmin"/>
-        <argument ref="strategiesBean"/>
-        <argument value="${configFileExtension}"/>
-    </bean>
+    <!--<bean id="configurationAdminMigratable"-->
+            <!--class="org.codice.ddf.configuration.admin.ConfigurationAdminMigratable">-->
+        <!--<argument ref="configurationAdmin"/>-->
+        <!--<argument ref="strategiesBean"/>-->
+        <!--<argument value="${configFileExtension}"/>-->
+    <!--</bean>-->
 
-    <service id="configurationAdminMigratableService" ref="configurationAdminMigratable"
-            interface="org.codice.ddf.migration.Migratable"/>
+    <!--<service id="configurationAdminMigratableService" ref="configurationAdminMigratable"-->
+            <!--interface="org.codice.ddf.migration.Migratable"/>-->
 
     <!-- Migratable service reference list -->
     <bean id="sortedMigratables"
