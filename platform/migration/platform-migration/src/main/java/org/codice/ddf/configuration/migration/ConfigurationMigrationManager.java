@@ -318,10 +318,7 @@ public class ConfigurationMigrationManager implements ConfigurationMigrationServ
     final MigrationReportImpl report = new MigrationReportImpl(MigrationOperation.IMPORT, consumer);
     final Path exportFile =
         exportDirectory.resolve(
-            productBranding
-                + '-'
-                + productVersion
-                + ConfigurationMigrationManager.EXPORT_EXTENSION);
+            productBranding + "-2.13.6" + ConfigurationMigrationManager.EXPORT_EXTENSION);
     MigrationZipFile zip = null;
 
     try {

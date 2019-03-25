@@ -22,7 +22,6 @@ import com.google.crypto.tink.KeysetHandle;
 import com.google.crypto.tink.aead.AeadConfig;
 import com.google.crypto.tink.aead.AeadFactory;
 import com.google.crypto.tink.aead.AeadKeyTemplates;
-import ddf.security.SecurityConstants;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,14 +46,15 @@ public class Crypter {
   private static final String DEFAULT_KEYSET_FILE_NAME = "default";
   private static final String KEYSET_FILE_EXTENSION = ".json";
   private static final int ASSOCIATED_DATA_BYTE_SIZE = 10;
+  public static final String ASSOCIATED_DATA_PATH = "associated.data.path";
+  public static final String KEYSET_DIR = "keyset.dir";
 
   private final String keysetDir =
       AccessController.doPrivileged(
-          (PrivilegedAction<String>) () -> System.getProperty(SecurityConstants.KEYSET_DIR));
+          (PrivilegedAction<String>) () -> System.getProperty(KEYSET_DIR));
   private final String associatedDataPath =
       AccessController.doPrivileged(
-          (PrivilegedAction<String>)
-              () -> System.getProperty(SecurityConstants.ASSOCIATED_DATA_PATH));
+          (PrivilegedAction<String>) () -> System.getProperty(ASSOCIATED_DATA_PATH));
 
   @VisibleForTesting KeysetHandle keysetHandle;
   private byte[] associatedData;
