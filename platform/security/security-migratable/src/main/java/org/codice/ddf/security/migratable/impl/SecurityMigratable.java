@@ -42,7 +42,7 @@ public class SecurityMigratable implements Migratable {
 
   private static final Path PDP_POLICIES_DIR = Paths.get("etc", "pdp");
 
-  private static final Path SECURITY_POLICIES_DIR = Paths.get("security");
+  private static final Path CONFIGURATIONS_POLICY_FILE = Paths.get("security", "configurations.policy");
 
   private static final List<Path> PROPERTIES_FILES =
       ImmutableList.of( //
@@ -100,8 +100,8 @@ public class SecurityMigratable implements Migratable {
     LOGGER.debug("Exporting PDP files from [{}]...", SecurityMigratable.PDP_POLICIES_DIR);
     context.getEntry(SecurityMigratable.PDP_POLICIES_DIR).store();
     LOGGER.debug(
-        "Exporting security policy files from [{}]...", SecurityMigratable.SECURITY_POLICIES_DIR);
-    context.getEntry(SecurityMigratable.SECURITY_POLICIES_DIR).store();
+        "Exporting security policy files from [{}]...", SecurityMigratable.CONFIGURATIONS_POLICY_FILE);
+    context.getEntry(SecurityMigratable.CONFIGURATIONS_POLICY_FILE).store();
   }
 
   @Override
@@ -122,7 +122,7 @@ public class SecurityMigratable implements Migratable {
     LOGGER.debug("Importing PDP Directory at [{}]...", SecurityMigratable.PDP_POLICIES_DIR);
     context.getEntry(SecurityMigratable.PDP_POLICIES_DIR).restore();
     LOGGER.debug(
-        "Importing security policy Directory at [{}]...", SecurityMigratable.SECURITY_POLICIES_DIR);
-    context.getEntry(SecurityMigratable.SECURITY_POLICIES_DIR).restore();
+        "Importing security policy Directory at [{}]...", SecurityMigratable.CONFIGURATIONS_POLICY_FILE);
+    context.getEntry(SecurityMigratable.CONFIGURATIONS_POLICY_FILE).restore();
   }
 }
