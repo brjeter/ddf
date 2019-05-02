@@ -46,6 +46,7 @@ grant
   codeBase "file:/platform-migratable" {
     permission java.io.FilePermission "${ddf.home.perm}etc${/}-", "read";
     permission java.io.FilePermission "${ddf.home.perm}bin${/}-", "read";
+    permission java.io.FilePermission "${ddf.home.perm}etc${/}custom.system.properties", "write";
 }
 
 grant
@@ -201,6 +202,7 @@ grant codeBase "file:/platform-osgi-configadmin" {
 
 grant codeBase "file:/org.apache.karaf.deployer.blueprint/org.apache.karaf.deployer.kar" {
     permission java.io.FilePermission "${ddf.home.perm}etc${/}definitions${/}-", "read";
+    permission java.io.FilePermission "${ddf.home.perm}etc${/}-", "read";
 }
 
 grant codeBase "file:/org.apache.karaf.jaas.modules" {

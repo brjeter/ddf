@@ -44,7 +44,7 @@ public class ConfigurationAdminMigratable implements Migratable {
    *
    * <p>1.0 - initial version
    */
-  private static final String CURRENT_VERSION = "1.0";
+  private static final String CURRENT_VERSION = "2.0";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationAdminMigratable.class);
 
@@ -119,6 +119,11 @@ public class ConfigurationAdminMigratable implements Migratable {
             context, this, configurationAdmin, getConfigurations(context));
 
     adminContext.memoryEntries().forEach(ImportMigrationConfigurationAdminEntry::restore);
+  }
+
+  @Override
+  public void doVersionUpgradeImport(ImportMigrationContext context, String migratableVersion) {
+    // Do nothing since config admin configurations are not currently migrated in version upgrades.
   }
 
   @SuppressWarnings(
