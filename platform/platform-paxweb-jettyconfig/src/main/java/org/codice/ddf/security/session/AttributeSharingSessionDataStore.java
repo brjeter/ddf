@@ -135,7 +135,7 @@ public class AttributeSharingSessionDataStore extends AbstractSessionDataStore {
   }
 
   @Override
-  public SessionData load(String id) {
+  public SessionData doLoad(String id) {
     synchronized (sessionDataMap) {
       return sessionDataMap.get(id);
     }
