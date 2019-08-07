@@ -129,8 +129,6 @@
                         </Embed-Dependency>
                         <Import-Package>
                             javax.net.ssl,
-                            net.sf.ehcache;version="[2.5,3.0.0)",
-                            net.sf.ehcache.config;version="[2.5,3.0.0)",
                             ch.qos.logback.classic;resolution:=optional;version="[1.0,2)",
                             com.hazelcast.core;resolution:=optional,
                             org.springframework.ldap*;resolution:=optional,

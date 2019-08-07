@@ -19,8 +19,4 @@
     <bean id="defaultTokenStore" class="ddf.security.sts.MemoryTokenStore"
           scope="singleton"/>
 
-    <!-- Required for CXF -->
-    <bean id="ehCacheTokenStore" class="ddf.security.sts.DefaultInMemoryTokenStore"
-        scope="singleton"/>
-    
 </blueprint>
