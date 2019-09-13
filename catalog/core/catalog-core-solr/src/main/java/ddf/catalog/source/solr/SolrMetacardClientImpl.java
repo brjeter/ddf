@@ -262,8 +262,9 @@ public class SolrMetacardClientImpl implements SolrMetacardClient {
           totalHits = docs.getNumFound();
           addDocsToResults(docs, results);
         }
-        responseProps.put(
-            SHOWING_RESULTS_FOR_KEY, (Serializable) getSearchTermFieldValues(solrResponse));
+        //        responseProps.put(
+        //            SHOWING_RESULTS_FOR_KEY, (Serializable)
+        // getSearchTermFieldValues(solrResponse));
       }
 
       if (isFacetedQuery) {
@@ -279,7 +280,8 @@ public class SolrMetacardClientImpl implements SolrMetacardClient {
       throw new UnsupportedQueryException("Could not complete solr query.", e);
     }
 
-    responseProps.put(SPELLCHECK_KEY, userSpellcheckIsOn);
+    responseProps.put("query", query.get("q"));
+    //    responseProps.put(SPELLCHECK_KEY, userSpellcheckIsOn);
     return new SourceResponseImpl(request, responseProps, results, totalHits);
   }
 
@@ -304,7 +306,7 @@ public class SolrMetacardClientImpl implements SolrMetacardClient {
   private boolean solrSpellcheckHasResults(QueryResponse solrResponse) {
     return solrResponse.getSpellCheckResponse() != null
         && solrResponse.getResults().size() == 0
-        && CollectionUtils.isNotEmpty(solrResponse.getSpellCheckResponse().getCollatedResults());
+        && solrResponse.getSpellCheckResponse().getCollatedResults().size() != 0;
   }
 
   private String findQueryToResend(SolrQuery query, QueryResponse solrResponse) {
