@@ -459,7 +459,7 @@ public class SamlProtocol {
   @VisibleForTesting
   public static Duration getCacheDuration() {
     return Duration.parse(
-        System.getProperty("org.codice.ddf.security.saml.Metadata.cacheDuration", "P7D"));
+        System.getProperty("org.codice.ddf.security.saml.Metadata.cacheDuration", "P7D")).;
   }
 
   public static AttributeQuery createAttributeQuery(

@@ -18,11 +18,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -203,11 +205,7 @@ public class PlatformMigratable implements Migratable {
             .toFile();
     currentProps = new Properties(fileOnSystem);
 
-    importedProps.load(
-        context
-            .getEntry(PlatformMigratable.CUSTOM_SYSTEM_PROPERTIES_PATH)
-            .getInputStream()
-            .orElseThrow(IOException::new));
+    importedProps.load(loadSystemPropertyInputStream(context));
 
     currentProps
         .entrySet()
@@ -215,7 +213,34 @@ public class PlatformMigratable implements Migratable {
         .filter(e -> propertyShouldNotBeOverwritten(e, importedProps))
         .forEach(e -> importedProps.put(e.getKey(), e.getValue()));
 
+    importedProps
+        .entrySet()
+        .forEach(
+            e -> {
+              if (e.getKey().equals("org.codice.ddf.security.saml.Metadata.cacheDuration")) {
+                try {
+                  String newValue = Duration.ofMillis(Long.parseLong(e.getValue())).toString();
+                  e.setValue(newValue);
+                } catch (NumberFormatException exception) {
+                }
+              }
+            });
+
+    importedProps.remove("${optionals}");
+
     importedProps.save(fileOnSystem);
+  }
+
+  private InputStream loadSystemPropertyInputStream(ImportMigrationContext context)
+      throws IOException {
+    return context
+        .getEntry(PlatformMigratable.CUSTOM_SYSTEM_PROPERTIES_PATH)
+        .getInputStream()
+        .orElse(
+            context
+                .getEntry(Paths.get("etc", "system.properties"))
+                .getInputStream()
+                .orElseThrow(IOException::new));
   }
 
   private boolean propertyShouldNotBeOverwritten(
