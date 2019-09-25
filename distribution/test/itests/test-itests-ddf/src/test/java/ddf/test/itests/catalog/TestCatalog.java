@@ -103,8 +103,6 @@ import org.codice.ddf.persistence.PersistentItem;
 import org.codice.ddf.persistence.PersistentStore;
 import org.codice.ddf.persistence.PersistentStore.PersistenceType;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswConstants;
-import org.codice.ddf.test.common.LoggingUtils;
-import org.codice.ddf.test.common.annotations.BeforeExam;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
@@ -174,15 +172,6 @@ public class TestCatalog extends AbstractIntegrationTest {
     return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
         + getFileContent(
             XML_RECORD_RESOURCE_PATH + "/SimpleXmlNoDecMetacard", ImmutableMap.of("uri", uri));
-  }
-
-  @BeforeExam
-  public void beforeExam() {
-    try {
-      waitForSystemReady();
-    } catch (Exception e) {
-      LoggingUtils.failWithThrowableStacktrace(e, "Failed in @BeforeExam: ");
-    }
   }
 
   @Before

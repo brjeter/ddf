@@ -362,8 +362,6 @@ public class TestSecurity extends AbstractIntegrationTest {
   @BeforeExam
   public void beforeTest() throws Exception {
     try {
-      waitForSystemReady();
-
       List<String> featurePolicies = new ArrayList<>();
       featurePolicies.addAll(Arrays.asList(getDefaultRequiredApps()));
       featurePolicies.addAll(FEATURES_TO_FILTER);

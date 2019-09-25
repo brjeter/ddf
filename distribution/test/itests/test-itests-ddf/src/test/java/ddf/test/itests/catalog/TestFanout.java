@@ -56,9 +56,7 @@ public class TestFanout extends AbstractIntegrationTest {
   @BeforeExam
   public void beforeExam() throws Exception {
     try {
-      waitForSystemReady();
       getSecurityPolicy().configureWebContextPolicy("/=IDP|GUEST", null, null);
-      waitForSystemReady();
 
       getCatalogBundle().setFanout(true);
       getCatalogBundle().waitForCatalogProvider();

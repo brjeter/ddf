@@ -74,7 +74,6 @@ public class TestCatalogValidation extends AbstractIntegrationTest {
   @BeforeExam
   public void beforeExam() {
     try {
-      waitForSystemReady();
       getServiceManager().startFeature(true, SAMPLE_VALIDATOR);
 
       // start test with validation errors/warnings allowed in catalog/search results

@@ -134,7 +134,6 @@ public class TestCatalogSearchUi extends AbstractIntegrationTest {
   @BeforeExam
   public void beforeExam() throws Exception {
     try {
-      waitForSystemReady();
       getServiceManager().waitForHttpEndpoint(WORKSPACES_API_PATH.getUrl());
       getServiceManager().waitForHttpEndpoint(QUERY_TEMPLATES_API_PATH.getUrl());
       getServiceManager().waitForHttpEndpoint(RESULT_TEMPLATES_API_PATH.getUrl());

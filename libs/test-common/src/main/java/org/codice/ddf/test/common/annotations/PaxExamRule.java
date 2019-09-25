@@ -63,6 +63,8 @@ public class PaxExamRule implements TestRule {
 
   private static boolean firstRun = true;
 
+  private static boolean firstSuiteRun = true;
+
   private static boolean setupFailed = false;
 
   private static int testCount;
@@ -103,6 +105,17 @@ public class PaxExamRule implements TestRule {
     } catch (Throwable throwable) {
       setupFailed = true;
       failRule(testClassName, throwable, BEFORE_EXAM_FAILURE_MESSAGE);
+    }
+
+    if (firstSuiteRun) {
+      try {
+        firstSuiteRun = false;
+        runAnnotations(BeforeSuite.class, testClass);
+      } catch (Throwable throwable) {
+        setupFailed = true;
+        LOGGER.error("Failed to setup SUITE for " + testClassName, throwable);
+        failRule(testClassName, throwable, BEFORE_EXAM_FAILURE_MESSAGE);
+      }
     }
 
     if (firstRun) {

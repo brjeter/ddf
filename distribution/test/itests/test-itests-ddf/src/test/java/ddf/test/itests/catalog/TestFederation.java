@@ -212,9 +212,7 @@ public class TestFederation extends AbstractIntegrationTest {
   @BeforeExam
   public void beforeExam() throws Exception {
     try {
-      waitForSystemReady();
       getSecurityPolicy().configureRestForGuest();
-      waitForSystemReady();
 
       getCatalogBundle().setupMaxDownloadRetryAttempts(MAX_DOWNLOAD_RETRY_ATTEMPTS);
 

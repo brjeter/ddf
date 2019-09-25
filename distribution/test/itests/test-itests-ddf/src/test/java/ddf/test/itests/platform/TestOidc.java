@@ -175,7 +175,6 @@ public class TestOidc extends AbstractIntegrationTest {
   @BeforeExam
   public void beforeTest() {
     try {
-      waitForSystemReady();
       getServiceManager().waitForAllBundles();
       getServiceManager().waitForHttpEndpoint(WHO_AM_I_URL.getUrl());
       getServiceManager().waitForHttpEndpoint(SERVICE_ROOT + "/catalog/query");

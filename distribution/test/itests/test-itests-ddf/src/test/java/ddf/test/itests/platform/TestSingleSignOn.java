@@ -178,7 +178,6 @@ public class TestSingleSignOn extends AbstractIntegrationTest {
   @BeforeExam
   public void beforeTest() throws Exception {
     try {
-      waitForSystemReady();
       // Start the services needed for testing.
       // We need to start the Search UI to test that it redirects properly
       getServiceManager().startFeature(true, "security-idp");

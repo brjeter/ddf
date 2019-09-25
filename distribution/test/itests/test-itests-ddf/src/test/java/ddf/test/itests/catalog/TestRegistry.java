@@ -170,7 +170,6 @@ public class TestRegistry extends AbstractIntegrationTest {
   @BeforeExam
   public void beforeExam() throws Exception {
     try {
-      waitForSystemReady();
       getServiceManager().startFeature(true, CATALOG_REGISTRY);
       getServiceManager().waitForAllBundles();
       getServiceManager().startFeature(true, CATALOG_REGISTRY_CORE);

@@ -51,7 +51,6 @@ public class TestPlatform extends AbstractIntegrationTest {
   @BeforeExam
   public void beforeTest() throws Exception {
     try {
-      waitForSystemReady();
       // Start the services needed for testing.
       getServiceManager().startFeature(true, "metrics-reporting");
       getServiceManager().waitForAllBundles();

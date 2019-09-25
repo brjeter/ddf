@@ -75,10 +75,14 @@ import org.codice.ddf.itests.common.config.UrlResourceReaderConfigurator;
 import org.codice.ddf.itests.common.csw.CswQueryBuilder;
 import org.codice.ddf.itests.common.security.SecurityPolicyConfigurator;
 import org.codice.ddf.test.common.LoggingUtils;
+import org.codice.ddf.test.common.annotations.BeforeSuite;
 import org.codice.ddf.test.common.annotations.PaxExamRule;
 import org.codice.ddf.test.common.annotations.PostTestConstruct;
 import org.junit.Rule;
+import org.junit.rules.MethodRule;
 import org.junit.rules.Stopwatch;
+import org.junit.rules.TestWatcher;
+import org.junit.rules.TestWatchman;
 import org.junit.runner.Description;
 import org.ops4j.pax.exam.MavenUtils;
 import org.ops4j.pax.exam.Option;
@@ -404,6 +408,15 @@ public abstract class AbstractIntegrationTest {
         SystemStateManager.getManager(serviceManager, features, adminConfig, console);
     manager.setSystemBaseState(this::waitForBaseSystemFeatures, false);
     manager.waitForSystemBaseState();
+  }
+
+  @BeforeSuite
+  public void beforeSuite() throws Exception {
+    try {
+      waitForSystemReady();
+    } catch (Exception e) {
+      LoggingUtils.failWithThrowableStacktrace(e, "Failed in @BeforeSuite: ");
+    }
   }
 
   /**

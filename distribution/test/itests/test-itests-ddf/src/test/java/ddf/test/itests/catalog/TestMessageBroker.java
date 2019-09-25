@@ -125,9 +125,7 @@ public class TestMessageBroker extends AbstractIntegrationTest {
 
   @BeforeExam
   public void beforeExam() throws Exception {
-    waitForSystemReady();
     getSecurityPolicy().configureRestForBasic();
-    waitForSystemReady();
     System.setProperty("artemis.amqp.port", AMQP_PORT.getPort());
     System.setProperty("artemis.multiprotocol.port", ARTEMIS_PORT.getPort());
     System.setProperty("artemis.openwire.port", OPENWIRE_PORT.getPort());
