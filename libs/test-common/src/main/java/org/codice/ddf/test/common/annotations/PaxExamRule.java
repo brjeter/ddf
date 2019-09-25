@@ -128,8 +128,6 @@ public class PaxExamRule implements TestRule {
   }
 
   private void finished(Description description) {
-    LOGGER.info("Finished {} ({}/{})", description.getMethodName(), testsExecuted, testCount);
-
     if (testsExecuted == testCount) {
       resetStaticFields();
 
