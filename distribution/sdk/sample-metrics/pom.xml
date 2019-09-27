@@ -39,11 +39,6 @@
             <version>3.0.1</version>
         </dependency>
         <dependency>
-            <groupId>ddf.metrics.collector</groupId>
-            <artifactId>metrics-collector</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.rrd4j</groupId>
             <artifactId>rrd4j</artifactId>
         </dependency>
@@ -60,7 +55,6 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Embed-Dependency>
                             metrics-core,
-                            metrics-collector,
                             rrd4j;scope=compile|runtime;artifactId=!slf4j-api
                         </Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
