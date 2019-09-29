@@ -82,7 +82,6 @@ import org.codice.ddf.test.common.annotations.PaxExamRule;
 import org.codice.ddf.test.common.annotations.PostTestConstruct;
 import org.junit.Rule;
 import org.junit.rules.Stopwatch;
-import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.ops4j.pax.exam.MavenUtils;
 import org.ops4j.pax.exam.Option;
@@ -167,8 +166,7 @@ public abstract class AbstractIntegrationTest {
 
   @Rule public PaxExamRule paxExamRule = new PaxExamRule(this);
 
-  @Rule
-  public ExamResultLogger resultLogger = new ExamResultLogger();
+  @Rule public ExamResultLogger resultLogger = new ExamResultLogger();
 
   @Rule public Stopwatch stopwatch = new TestMethodTimer();
 

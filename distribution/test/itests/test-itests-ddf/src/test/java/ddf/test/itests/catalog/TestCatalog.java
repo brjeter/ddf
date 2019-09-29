@@ -183,7 +183,7 @@ public class TestCatalog extends AbstractIntegrationTest {
   public void tearDown() throws IOException {
     urlResourceReaderConfigurator.setUrlResourceReaderRootDirs(
         DEFAULT_URL_RESOURCE_READER_ROOT_RESOURCE_DIRS);
-    clearCatalog();
+    clearCatalogAndWait();
   }
 
   @Test
@@ -2270,7 +2270,6 @@ public class TestCatalog extends AbstractIntegrationTest {
   }
 
   private void persistToWorkspace(int size) throws Exception {
-    getServiceManager().startFeature(true, "search-ui-app");
     // Generate very large data block
     Map<String, String> map = Maps.newHashMap();
     for (int i = 0; i < size; i++) {

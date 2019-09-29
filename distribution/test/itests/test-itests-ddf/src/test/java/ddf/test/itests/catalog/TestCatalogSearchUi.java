@@ -49,6 +49,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.codice.ddf.itests.common.AbstractIntegrationTest;
 import org.codice.ddf.test.common.LoggingUtils;
+import org.codice.ddf.test.common.annotations.AfterExam;
 import org.codice.ddf.test.common.annotations.BeforeExam;
 import org.codice.gsonsupport.GsonTypeAdapters.LongDoubleTypeAdapter;
 import org.junit.After;
@@ -131,6 +132,8 @@ public class TestCatalogSearchUi extends AbstractIntegrationTest {
           .put("csw:Record", "CSW Record XML")
           .build();
 
+  private static Map<String, Object> originalPolicyManagerProps = null;
+
   @BeforeExam
   public void beforeExam() throws Exception {
     try {
@@ -142,6 +145,11 @@ public class TestCatalogSearchUi extends AbstractIntegrationTest {
     } catch (Exception e) {
       LoggingUtils.failWithThrowableStacktrace(e, "Failed in @BeforeExam: ");
     }
+  }
+
+  @AfterExam
+  public void afterExam() throws Exception {
+    getSecurityPolicy().updateWebContextPolicy(originalPolicyManagerProps);
   }
 
   @After
@@ -184,6 +192,10 @@ public class TestCatalogSearchUi extends AbstractIntegrationTest {
   }
 
   private RequestSpecification asGuest() throws Exception {
+    Map<String, Object> policyManagerProps = getSecurityPolicy().configureRestForGuest();
+    if (originalPolicyManagerProps == null) {
+      originalPolicyManagerProps = policyManagerProps;
+    }
     getSecurityPolicy().configureRestForGuest();
     return given()
         .log()
@@ -193,7 +205,10 @@ public class TestCatalogSearchUi extends AbstractIntegrationTest {
   }
 
   private RequestSpecification asUser(String username, String password) throws Exception {
-    getSecurityPolicy().configureRestForBasic();
+    Map<String, Object> policyManagerProps = getSecurityPolicy().configureRestForBasic();
+    if (originalPolicyManagerProps == null) {
+      originalPolicyManagerProps = policyManagerProps;
+    }
     return given()
         .log()
         .ifValidationFails()
@@ -205,7 +220,10 @@ public class TestCatalogSearchUi extends AbstractIntegrationTest {
   }
 
   private RequestSpecification asAdmin() throws Exception {
-    getSecurityPolicy().configureRestForBasic();
+    Map<String, Object> policyManagerProps = getSecurityPolicy().configureRestForBasic();
+    if (originalPolicyManagerProps == null) {
+      originalPolicyManagerProps = policyManagerProps;
+    }
     return given()
         .log()
         .ifValidationFails()
