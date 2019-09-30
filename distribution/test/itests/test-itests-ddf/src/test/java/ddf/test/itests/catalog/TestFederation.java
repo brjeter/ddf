@@ -32,11 +32,8 @@ import static org.codice.ddf.itests.common.AbstractIntegrationTest.DynamicUrl.IN
 import static org.codice.ddf.itests.common.WaitCondition.expect;
 import static org.codice.ddf.itests.common.catalog.CatalogTestCommons.ingest;
 import static org.codice.ddf.itests.common.csw.CswTestCommons.CSW_CONNECTED_SOURCE_FACTORY_PID;
-import static org.codice.ddf.itests.common.csw.CswTestCommons.CSW_FEDERATED_SOURCE_FACTORY_PID;
-import static org.codice.ddf.itests.common.csw.CswTestCommons.GMD_CSW_FEDERATED_SOURCE_FACTORY_PID;
 import static org.codice.ddf.itests.common.csw.CswTestCommons.getCswConnectedSourceProperties;
 import static org.codice.ddf.itests.common.csw.CswTestCommons.getCswQuery;
-import static org.codice.ddf.itests.common.csw.CswTestCommons.getCswSourceProperties;
 import static org.codice.ddf.itests.common.csw.CswTestCommons.getCswSubscription;
 import static org.codice.ddf.itests.common.opensearch.OpenSearchTestCommons.OPENSEARCH_FACTORY_PID;
 import static org.codice.ddf.itests.common.opensearch.OpenSearchTestCommons.getOpenSearch;
@@ -143,12 +140,6 @@ public class TestFederation extends AbstractIntegrationTest {
 
   private static final String CONNECTED_SOURCE_ID = "cswConnectedSource";
 
-  private static final String CSW_STUB_SOURCE_ID = "cswStubServer";
-
-  private static final String CSW_SOURCE_WITH_METACARD_XML_ID = "cswSource2";
-
-  private static final String GMD_SOURCE_ID = "gmdSource";
-
   private static final String DEFAULT_URL_RESOURCE_READER_ROOT_RESOURCE_DIRS = "data/products";
 
   private static final String DEFAULT_SAMPLE_PRODUCT_FILE_NAME = "sample.txt";
@@ -160,11 +151,6 @@ public class TestFederation extends AbstractIntegrationTest {
 
   private static final Path PRODUCT_CACHE = Paths.get("data", "Product_Cache");
 
-  private static final DynamicPort CSW_STUB_SERVER_PORT = new DynamicPort(7);
-
-  public static final DynamicUrl CSW_STUB_SERVER_PATH =
-      new DynamicUrl(INSECURE_ROOT, CSW_STUB_SERVER_PORT, "/services/csw");
-
   private static final int NO_RETRIES = 0;
 
   private static final String NOTIFICATIONS_CHANNEL = "/ddf/notifications/**";
@@ -174,8 +160,6 @@ public class TestFederation extends AbstractIntegrationTest {
   private static final String FIND_ACTION_URL_BY_TITLE_PATTERN =
       "data.results[0].metacard.actions.find {it.title=='%s'}.url";
 
-  private static final String POLL_INTERVAL = "pollInterval";
-
   private static final String ADMIN_USERNAME = "admin";
 
   private static final String ADMIN_PASSWORD = "admin";
@@ -183,8 +167,6 @@ public class TestFederation extends AbstractIntegrationTest {
   private static final String LOCALHOST_USERNAME = "localhost";
 
   private static final String LOCALHOST_PASSWORD = "localhost";
-
-  private static final int CSW_SOURCE_POLL_INTERVAL = 10;
 
   private static final int MAX_DOWNLOAD_RETRY_ATTEMPTS = 3;
 
@@ -229,76 +211,78 @@ public class TestFederation extends AbstractIntegrationTest {
 
       getCatalogBundle().setupMaxDownloadRetryAttempts(MAX_DOWNLOAD_RETRY_ATTEMPTS);
 
-      Map<String, Object> openSearchProperties =
-          getOpenSearchSourceProperties(
-              OPENSEARCH_SOURCE_ID, OPENSEARCH_PATH.getUrl(), getServiceManager());
-      openSearchPid =
-          getServiceManager()
-              .createManagedService(OPENSEARCH_FACTORY_PID, openSearchProperties)
-              .getPid();
+      //      Map<String, Object> openSearchProperties =
+      //          getOpenSearchSourceProperties(
+      //              OPENSEARCH_SOURCE_ID, OPENSEARCH_PATH.getUrl(), getServiceManager());
+      //      openSearchPid =
+      //          getServiceManager()
+      //              .createManagedService(OPENSEARCH_FACTORY_PID, openSearchProperties)
+      //              .getPid();
 
       cswServer =
           new FederatedCswMockServer(
               CSW_STUB_SOURCE_ID, INSECURE_ROOT, Integer.parseInt(CSW_STUB_SERVER_PORT.getPort()));
       cswServer.start();
 
-      Map<String, Object> cswStubServerProperties =
-          getCswSourceProperties(CSW_STUB_SOURCE_ID, CSW_PATH.getUrl(), getServiceManager());
-      cswStubServerProperties.put("cswUrl", CSW_STUB_SERVER_PATH.getUrl());
-      cswStubServerProperties.put(POLL_INTERVAL, CSW_SOURCE_POLL_INTERVAL);
-      cswPid =
-          getServiceManager()
-              .createManagedService(CSW_FEDERATED_SOURCE_FACTORY_PID, cswStubServerProperties)
-              .getPid();
+      //      Map<String, Object> cswStubServerProperties =
+      //          getCswSourceProperties(CSW_STUB_SOURCE_ID, CSW_PATH.getUrl(),
+      // getServiceManager());
+      //      cswStubServerProperties.put("cswUrl", CSW_STUB_SERVER_PATH.getUrl());
+      //      cswStubServerProperties.put(POLL_INTERVAL, CSW_SOURCE_POLL_INTERVAL);
+      //      cswPid =
+      //          getServiceManager()
+      //              .createManagedService(CSW_FEDERATED_SOURCE_FACTORY_PID,
+      // cswStubServerProperties)
+      //              .getPid();
+      //
+      //      getServiceManager().waitForHttpEndpoint(CSW_PATH + "?_wadl");
+      //
+      //      Map<String, Object> cswProperties =
+      //          getCswSourceProperties(CSW_SOURCE_ID, CSW_PATH.getUrl(), getServiceManager());
+      //
+      //      cswProperties.put(POLL_INTERVAL, CSW_SOURCE_POLL_INTERVAL);
+      //      cswPid2 =
+      //          getServiceManager()
+      //              .createManagedService(CSW_FEDERATED_SOURCE_FACTORY_PID, cswProperties)
+      //              .getPid();
+      //
+      //      Map<String, Object> cswProperties2 =
+      //          getCswSourceProperties(
+      //              CSW_SOURCE_WITH_METACARD_XML_ID, CSW_PATH.getUrl(), getServiceManager());
+      //      cswProperties2.put("outputSchema", "urn:catalog:metacard");
+      //      cswProperties2.put(POLL_INTERVAL, CSW_SOURCE_POLL_INTERVAL);
+      //      cswPid3 =
+      //          getServiceManager()
+      //              .createManagedService(CSW_FEDERATED_SOURCE_FACTORY_PID, cswProperties2)
+      //              .getPid();
+      //
+      //      Map<String, Object> gmdProperties =
+      //          getCswSourceProperties(
+      //              GMD_SOURCE_ID,
+      //              GMD_CSW_FEDERATED_SOURCE_FACTORY_PID,
+      //              CSW_PATH.getUrl(),
+      //              getServiceManager());
+      //
+      //      gmdProperties.put(POLL_INTERVAL, CSW_SOURCE_POLL_INTERVAL);
+      //      gmdPid =
+      //          getServiceManager()
+      //              .createManagedService(GMD_CSW_FEDERATED_SOURCE_FACTORY_PID, gmdProperties)
+      //              .getPid();
+      //
+      //      getCatalogBundle().waitForFederatedSource(OPENSEARCH_SOURCE_ID);
+      //      getCatalogBundle().waitForFederatedSource(CSW_STUB_SOURCE_ID);
+      //      getCatalogBundle().waitForFederatedSource(CSW_SOURCE_ID);
+      //      getCatalogBundle().waitForFederatedSource(CSW_SOURCE_WITH_METACARD_XML_ID);
+      //      getCatalogBundle().waitForFederatedSource(GMD_SOURCE_ID);
 
-      getServiceManager().waitForHttpEndpoint(CSW_PATH + "?_wadl");
-
-      Map<String, Object> cswProperties =
-          getCswSourceProperties(CSW_SOURCE_ID, CSW_PATH.getUrl(), getServiceManager());
-
-      cswProperties.put(POLL_INTERVAL, CSW_SOURCE_POLL_INTERVAL);
-      cswPid2 =
-          getServiceManager()
-              .createManagedService(CSW_FEDERATED_SOURCE_FACTORY_PID, cswProperties)
-              .getPid();
-
-      Map<String, Object> cswProperties2 =
-          getCswSourceProperties(
-              CSW_SOURCE_WITH_METACARD_XML_ID, CSW_PATH.getUrl(), getServiceManager());
-      cswProperties2.put("outputSchema", "urn:catalog:metacard");
-      cswProperties2.put(POLL_INTERVAL, CSW_SOURCE_POLL_INTERVAL);
-      cswPid3 =
-          getServiceManager()
-              .createManagedService(CSW_FEDERATED_SOURCE_FACTORY_PID, cswProperties2)
-              .getPid();
-
-      Map<String, Object> gmdProperties =
-          getCswSourceProperties(
-              GMD_SOURCE_ID,
-              GMD_CSW_FEDERATED_SOURCE_FACTORY_PID,
-              CSW_PATH.getUrl(),
-              getServiceManager());
-
-      gmdProperties.put(POLL_INTERVAL, CSW_SOURCE_POLL_INTERVAL);
-      gmdPid =
-          getServiceManager()
-              .createManagedService(GMD_CSW_FEDERATED_SOURCE_FACTORY_PID, gmdProperties)
-              .getPid();
-
-      getCatalogBundle().waitForFederatedSource(OPENSEARCH_SOURCE_ID);
-      getCatalogBundle().waitForFederatedSource(CSW_STUB_SOURCE_ID);
-      getCatalogBundle().waitForFederatedSource(CSW_SOURCE_ID);
-      getCatalogBundle().waitForFederatedSource(CSW_SOURCE_WITH_METACARD_XML_ID);
-      getCatalogBundle().waitForFederatedSource(GMD_SOURCE_ID);
-
-      getServiceManager()
-          .waitForSourcesToBeAvailable(
-              REST_PATH.getUrl(),
-              OPENSEARCH_SOURCE_ID,
-              CSW_STUB_SOURCE_ID,
-              CSW_SOURCE_ID,
-              CSW_SOURCE_WITH_METACARD_XML_ID,
-              GMD_SOURCE_ID);
+      //      getServiceManager()
+      //          .waitForSourcesToBeAvailable(
+      //              REST_PATH.getUrl(),
+      //              OPENSEARCH_SOURCE_ID,
+      //              CSW_STUB_SOURCE_ID,
+      //              CSW_SOURCE_ID,
+      //              CSW_SOURCE_WITH_METACARD_XML_ID,
+      //              GMD_SOURCE_ID);
 
       LOGGER.info("Source status: \n{}", get(REST_PATH.getUrl() + "sources").body().prettyPrint());
 
@@ -309,11 +293,11 @@ public class TestFederation extends AbstractIntegrationTest {
 
   @AfterExam
   public void afterExam() throws Exception {
-    getServiceManager().stopManagedService(openSearchPid);
-    getServiceManager().stopManagedService(cswPid);
-    getServiceManager().stopManagedService(cswPid2);
-    getServiceManager().stopManagedService(cswPid3);
-    getServiceManager().stopManagedService(gmdPid);
+    //    getServiceManager().stopManagedService(openSearchPid);
+    //    getServiceManager().stopManagedService(cswPid);
+    //    getServiceManager().stopManagedService(cswPid2);
+    //    getServiceManager().stopManagedService(cswPid3);
+    //    getServiceManager().stopManagedService(gmdPid);
     if (cswServer != null) {
       cswServer.stop();
     }

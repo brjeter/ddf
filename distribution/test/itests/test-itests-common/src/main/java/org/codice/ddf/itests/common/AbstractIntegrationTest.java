@@ -19,6 +19,11 @@ import static org.awaitility.Awaitility.with;
 import static org.codice.ddf.itests.common.AbstractIntegrationTest.DynamicUrl.INSECURE_ROOT;
 import static org.codice.ddf.itests.common.AbstractIntegrationTest.DynamicUrl.SECURE_ROOT;
 import static org.codice.ddf.itests.common.csw.CswQueryBuilder.PROPERTY_IS_LIKE;
+import static org.codice.ddf.itests.common.csw.CswTestCommons.CSW_FEDERATED_SOURCE_FACTORY_PID;
+import static org.codice.ddf.itests.common.csw.CswTestCommons.GMD_CSW_FEDERATED_SOURCE_FACTORY_PID;
+import static org.codice.ddf.itests.common.csw.CswTestCommons.getCswSourceProperties;
+import static org.codice.ddf.itests.common.opensearch.OpenSearchTestCommons.OPENSEARCH_FACTORY_PID;
+import static org.codice.ddf.itests.common.opensearch.OpenSearchTestCommons.getOpenSearchSourceProperties;
 import static org.hamcrest.Matchers.hasXPath;
 import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
 import static org.ops4j.pax.exam.CoreOptions.composite;
@@ -56,6 +61,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -200,6 +206,21 @@ public abstract class AbstractIntegrationTest {
   private static final String SYSTEM_PROPERTIES_REL_PATH = "etc/custom.system.properties";
 
   private static final String DDF_ITESTS_GROUP_ID = "ddf.test.itests";
+
+  protected static final String CSW_STUB_SOURCE_ID = "cswStubServer";
+
+  protected static final String CSW_SOURCE_WITH_METACARD_XML_ID = "cswSource2";
+
+  protected static final String GMD_SOURCE_ID = "gmdSource";
+
+  protected static final DynamicPort CSW_STUB_SERVER_PORT = new DynamicPort(7);
+
+  protected static final DynamicUrl CSW_STUB_SERVER_PATH =
+      new DynamicUrl(INSECURE_ROOT, CSW_STUB_SERVER_PORT, "/services/csw");
+
+  protected static final String POLL_INTERVAL = "pollInterval";
+
+  protected static final int CSW_SOURCE_POLL_INTERVAL = 10;
 
   protected static final String[] DEFAULT_REQUIRED_APPS = {
     "catalog-app", "solr-app", "spatial-app", "sdk-app"
@@ -415,6 +436,51 @@ public abstract class AbstractIntegrationTest {
   public void beforeSuite() throws Exception {
     try {
       waitForSystemReady();
+      Map<String, Object> openSearchProperties =
+          getOpenSearchSourceProperties(
+              OPENSEARCH_SOURCE_ID, OPENSEARCH_PATH.getUrl(), getServiceManager());
+      getServiceManager()
+          .createManagedService(OPENSEARCH_FACTORY_PID, openSearchProperties)
+          .getPid();
+
+      Map<String, Object> cswStubServerProperties =
+          getCswSourceProperties(CSW_STUB_SOURCE_ID, CSW_PATH.getUrl(), getServiceManager());
+      cswStubServerProperties.put("cswUrl", CSW_STUB_SERVER_PATH.getUrl());
+      cswStubServerProperties.put(POLL_INTERVAL, CSW_SOURCE_POLL_INTERVAL);
+      getServiceManager()
+          .createManagedService(CSW_FEDERATED_SOURCE_FACTORY_PID, cswStubServerProperties)
+          .getPid();
+
+      getServiceManager().waitForHttpEndpoint(CSW_PATH + "?_wadl");
+
+      Map<String, Object> cswProperties =
+          getCswSourceProperties(CSW_SOURCE_ID, CSW_PATH.getUrl(), getServiceManager());
+
+      cswProperties.put(POLL_INTERVAL, CSW_SOURCE_POLL_INTERVAL);
+      getServiceManager()
+          .createManagedService(CSW_FEDERATED_SOURCE_FACTORY_PID, cswProperties)
+          .getPid();
+
+      Map<String, Object> cswProperties2 =
+          getCswSourceProperties(
+              CSW_SOURCE_WITH_METACARD_XML_ID, CSW_PATH.getUrl(), getServiceManager());
+      cswProperties2.put("outputSchema", "urn:catalog:metacard");
+      cswProperties2.put(POLL_INTERVAL, CSW_SOURCE_POLL_INTERVAL);
+      getServiceManager()
+          .createManagedService(CSW_FEDERATED_SOURCE_FACTORY_PID, cswProperties2)
+          .getPid();
+
+      Map<String, Object> gmdProperties =
+          getCswSourceProperties(
+              GMD_SOURCE_ID,
+              GMD_CSW_FEDERATED_SOURCE_FACTORY_PID,
+              CSW_PATH.getUrl(),
+              getServiceManager());
+
+      gmdProperties.put(POLL_INTERVAL, CSW_SOURCE_POLL_INTERVAL);
+      getServiceManager()
+          .createManagedService(GMD_CSW_FEDERATED_SOURCE_FACTORY_PID, gmdProperties)
+          .getPid();
     } catch (Exception e) {
       LoggingUtils.failWithThrowableStacktrace(e, "Failed in @BeforeSuite: ");
     }

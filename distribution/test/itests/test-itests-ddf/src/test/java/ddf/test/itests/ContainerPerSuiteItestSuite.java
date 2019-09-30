@@ -13,21 +13,8 @@
  */
 package ddf.test.itests;
 
-import ddf.test.itests.catalog.TestCatalog;
 import ddf.test.itests.catalog.TestCatalogSearchUi;
-import ddf.test.itests.catalog.TestCatalogValidation;
-import ddf.test.itests.catalog.TestFanout;
 import ddf.test.itests.catalog.TestFederation;
-import ddf.test.itests.catalog.TestFtp;
-import ddf.test.itests.catalog.TestMessageBroker;
-import ddf.test.itests.catalog.TestRegistry;
-import ddf.test.itests.catalog.TestSecurityAuditPlugin;
-import ddf.test.itests.catalog.TestSpatial;
-import ddf.test.itests.platform.TestOidc;
-import ddf.test.itests.platform.TestPlatform;
-import ddf.test.itests.platform.TestSecurity;
-import ddf.test.itests.platform.TestSingleSignOn;
-import ddf.test.itests.platform.TestSolrCommands;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -38,19 +25,19 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
   TestCatalogSearchUi.class,
-  TestFederation.class,
-  TestRegistry.class,
-  TestFtp.class,
-  TestSpatial.class,
-  TestCatalogValidation.class,
-  TestCatalog.class,
-  TestSingleSignOn.class,
-  TestSolrCommands.class,
-  TestSecurity.class,
-  TestOidc.class,
-  TestPlatform.class,
-  TestFanout.class,
-  TestMessageBroker.class,
-  TestSecurityAuditPlugin.class
+  TestFederation.class // ,
+  //  TestRegistry.class,
+  //  TestFtp.class,
+  //  TestSpatial.class,
+  //  TestCatalogValidation.class,
+  //  TestCatalog.class,
+  //  TestSingleSignOn.class,
+  //  TestSolrCommands.class,
+  //  TestSecurity.class,
+  //  TestOidc.class,
+  //  TestPlatform.class,
+  //  TestFanout.class,
+  //  TestMessageBroker.class,
+  //  TestSecurityAuditPlugin.class
 })
 public class ContainerPerSuiteItestSuite {}
